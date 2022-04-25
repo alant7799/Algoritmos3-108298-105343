@@ -282,9 +282,9 @@ habitat class
 cantidadDeHuevosConFirmaGeneticaDeLara
 	^coleccionDeHuevos at: nidoDeLara.! !
 
-!habitat class methodsFor: 'metodosDeHuevos' stamp: 'IACS 4/24/2022 21:44:41'!
+!habitat class methodsFor: 'metodosDeHuevos' stamp: 'AT 4/24/2022 23:13:29'!
 cantidadDeHuevosConFirmaGeneticaDeOriana
-	^coleccionDeHuevos at: 1.! !
+	^coleccionDeHuevos at: nidoDeOriana.! !
 
 !habitat class methodsFor: 'metodosDeHuevos' stamp: 'IACS 4/24/2022 21:49:12'!
 cantidadDeHuevosConFirmaGeneticaDeOrnella
@@ -404,13 +404,13 @@ ponerPolillasEn0
 	cantidadDePolillas := 0.! !
 
 
-!habitat class methodsFor: '--** private fileout/in **--' stamp: 'IACS 4/24/2022 22:34:48'!
+!habitat class methodsFor: '--** private fileout/in **--' stamp: 'AT 4/24/2022 23:14:03'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
-	coleccionDeHuevos := ((OrderedCollection new) add: 0; add: 1; add: 0; yourself).
-	cantidadDeOrugas := 0.
-	cantidadDePolillas := 0.
+	coleccionDeHuevos := ((OrderedCollection new) add: 1; add: 0; add: 0; yourself).
+	cantidadDeOrugas := 1.
+	cantidadDePolillas := 1.
 	nidoDeOriana := 1.
 	nidoDeOrnella := 1.
 	nidoDePolly := 2.
