@@ -1,0 +1,144 @@
+- Los test 01 y 02 tienen la misma estructura: Tomamos una acción, y la timeamos calculando la diferencia en los tiempos
+de ejecución. Finalmente devolvemos si la acción se pudo ejecutar en menos de un tiempo estipulado.
+
+	- Podríamos utilizar una abstracción para remover este código repetido: Un cronómetro al que le pasamos un límite y una
+	acción para timear, cuya ejecución no puede pasar dicho límite.
+
+	--- código del test 01 --- 
+
+	| customerBook millisecondsBeforeRunning millisecondsAfterRunning |
+	
+	customerBook := CustomerBook new.
+	
+	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
+	customerBook addCustomerNamed: 'John Lennon'.
+	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
+	
+	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (50 * millisecond)
+
+	--- código del test 02 ---
+
+	| customerBook millisecondsBeforeRunning millisecondsAfterRunning paulMcCartney |
+	
+	customerBook := CustomerBook new.
+	paulMcCartney := 'Paul McCartney'.
+	
+	customerBook addCustomerNamed: paulMcCartney.
+	  
+	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
+	customerBook removeCustomerNamed: paulMcCartney.
+	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
+	
+	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (100 * millisecond)
+	
+	--- código parametrizado ---
+
+method cronometrar $action de $customerBook conLimite $threshold
+	| millisecondsBeforeRunning millisecondsAfterRunning |
+			  
+	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
+	$customerBook $action
+	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
+	
+	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < ($threshold * millisecond)
+	
+	- Esta parametrización dejaría la creación del customerBook fuera
+
+-------------------------------------------------------------_-------------------------------------------------------------
+
+- Los test 03 y 04 actúan de forma similar: Realizan una acción que debería ser inválida, realizan un catch de la excepción
+y verifican que los datos sigan correctos.
+
+	- Un método verificarQue $accionInvalida NoModifica $camposPrevios
+
+	--- Código polémico en test 03 ---
+
+	[ customerBook addCustomerNamed: ''.
+	self fail ]
+		on: Error 
+		do: [ :anError | 
+			self assert: anError messageText = CustomerBook customerCanNotBeEmptyErrorMessage.
+			self assert: customerBook isEmpty ]
+
+	--- Código polémico en test 04 ---
+
+	[ customerBook removeCustomerNamed: 'Paul McCartney'.
+	self fail ]
+		on: NotFound 
+		do: [ :anError | 
+			self assert: customerBook numberOfCustomers = 1.
+			self assert: (customerBook includesCustomerNamed: johnLennon) ]
+
+	--- Parametrización del código polémico ---
+
+method verificarQue $accion EsInvalidaSobre $customerBook Y $verificarCampos
+	[ $customerBook $accion.
+	self fail ]
+		on: NotFound 
+		do: [ :anError | 
+			$verificarCampos]
+
+
+-------------------------------------------------------------_-------------------------------------------------------------
+
+- Los test 05 y 06 actúan de forma similar: Ambos agregan un cliente paulMcCartney y lo suspenden. Esta acción puede ser abstraída.
+Luego ambos verifican
+
+	--- Código repetido en ambos tests ---
+
+	| customerBook paulMcCartney|
+	
+	customerBook := CustomerBook new.
+	paulMcCartney := 'Paul McCartney'.
+	
+	customerBook addCustomerNamed: paulMcCartney.
+	customerBook suspendCustomerNamed: paulMcCartney.
+
+	- Notamos que en este caso basta simplemente con crear un método que empaquete esto. No estoy seguro de si vale la pena
+	empaquetar los asserts.
+
+	- Lo que sí podemos hacer es refactorizarlo para no romper el encapsulamiento:
+
+	--- en el test 05 ---
+
+	- Podríamos crear las abstracciones faltantes en la clase CustomerBook, no sé si sería lo mejor.
+
+	--- en el test 06 ---
+
+					-- Código original --										-- Código refactorizado --
+	self assert: 0 equals: customerBook numberOfActiveCustomers.	| self assert: customerBook isEmpty
+	self assert: 0 equals: customerBook numberOfSuspendedCustomers. |
+	self assert: 0 equals: customerBook numberOfCustomers.			|
+	self deny: (customerBook includesCustomerNamed: paulMcCartney). | 
+
+
+-------------------------------------------------------------_-------------------------------------------------------------
+
+- Los test 07 y 08 actúan de forma similar: Ambos agregan un cliente johnLennon, realizan una acción (o ninguna en el caso del 07)
+y repiten casi exactamente el mismo bloque de código:
+
+[ customerBook suspendCustomerNamed: 'Ringo Starr'.
+	self fail ]
+		on: CantSuspend 
+		do: [ :anError | 
+			self assert: customerBook numberOfCustomers = 1.
+			self assert: (customerBook includesCustomerNamed: johnLennon) ]
+
+
+[ customerBook suspendCustomerNamed: johnLennon.
+	self fail ]
+		on: CantSuspend 
+		do: [ :anError | 
+			self assert: customerBook numberOfCustomers = 1.
+			self assert: (customerBook includesCustomerNamed: johnLennon) ]
+
+------------  Parametrizado queda:  ----------------
+
+method suspenderA $customerName De $customerBook YVerificarQueTodoSigaEnOrden
+[ $customerBook suspendCustomerNamed: $customerName.
+	self fail ]
+		on: CantSuspend 
+		do: [ :anError | 
+			self assert: $customerBook numberOfCustomers = 1.
+			self assert: ($customerBook includesCustomerNamed: 'john Lennon') ]
+
