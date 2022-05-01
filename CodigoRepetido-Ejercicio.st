@@ -36,7 +36,7 @@ test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'AT 5/1/2022 18:13:37'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AT 5/1/2022 18:19:18'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
 	| customerBook |
@@ -54,19 +54,15 @@ test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'HernanWilkinson 5/9/2012 18:12'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AT 5/1/2022 19:17:10'!
 test03CanNotAddACustomerWithEmptyName 
 
 	| customerBook |
 			
 	customerBook := CustomerBook new.
-
-	[ customerBook addCustomerNamed: ''.
-	self fail ]
-		on: Error 
-		do: [ :anError | 
+	self doAction: [ customerBook addCustomerNamed: ''. self fail ] whenError: Error verify: [ :anError | 
 			self assert: anError messageText = CustomerBook customerCanNotBeEmptyErrorMessage.
-			self assert: customerBook isEmpty ]! !
+			self assert: customerBook isEmpty].! !
 
 !CustomerBookTest methodsFor: 'testing' stamp: 'HAW 8/28/2017 08:57:25'!
 test04CanNotRemoveAnInvalidCustomer
@@ -160,6 +156,11 @@ test08CanNotSuspendAnAlreadySuspendedCustomer
 			self assert: customerBook numberOfCustomers = 1.
 			self assert: (customerBook includesCustomerNamed: johnLennon) ]
 ! !
+
+
+!CustomerBookTest methodsFor: 'private' stamp: 'AT 5/1/2022 19:16:55'!
+doAction: block whenError: anError verify: anotherBlock
+	block on: anError do: anotherBlock.! !
 
 
 !classDefinition: #CustomerBook category: 'CodigoRepetido-Ejercicio'!
