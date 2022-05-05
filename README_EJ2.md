@@ -22,12 +22,12 @@ sería el ente de la realidad que modelamos en nuestro código.
 
 ¿Cuáles son las formas en que podemos representar entes de la realidad en Smalltalk que conocés? Es decir, ¿qué cosas del lenguaje Smalltalk puedo usar para representar entidades de la realidad?
 
-Modelamos entes de la realidad mediante objetos, y especialmente en el caso de este ejercicio, mediante comportamientos o métodos (en
+- Modelamos entes de la realidad mediante objetos, y especialmente en el caso de este ejercicio, mediante comportamientos o métodos (en
 el ejercicio tuvimos que modelar, entre otros tipos de pruebas, un temporizador).
 
 ## Teoría de Naur
 
 ¿Qué relación hay entre sacar código repetido (creando abstracciones) y la teoría del modelo/sistema (del paper de Naur)?
 
-Al sacar código repetido, estamos enriqueciendo nuestra teoría mediante nuevas abstracciones, al mismo tiempo que la mejoramos
+- Al sacar código repetido, estamos enriqueciendo nuestra teoría mediante nuevas abstracciones, al mismo tiempo que la mejoramos
 mediante la eliminación de entidades redundantes, o que están fuertemente relacionadas a otras.
