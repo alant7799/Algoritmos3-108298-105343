@@ -336,25 +336,33 @@ isZero
 	self subclassResponsibility ! !
 
 
+!Numero methodsFor: 'private' stamp: 'AT 5/8/2022 19:18:23'!
+addAFraction
+	^ self subclassResponsibility.! !
+
+!Numero methodsFor: 'private' stamp: 'AT 5/8/2022 19:18:34'!
+addAnInteger
+	^ self subclassResponsibility.! !
+
+!Numero methodsFor: 'private' stamp: 'AT 5/8/2022 19:32:35'!
+divideAFraction
+	^ self subclassResponsibility.! !
+
+!Numero methodsFor: 'private' stamp: 'AT 5/8/2022 19:32:43'!
+divideAnInteger
+	^ self subclassResponsibility.! !
+
 !Numero methodsFor: 'private' stamp: 'HernanWilkinson 5/7/2016 22:48'!
 invalidNumberType
 
 	self error: self class invalidNumberTypeErrorDescription! !
 
-!Numero methodsFor: 'private' stamp: 'AT 5/5/2022 20:01:58'!
-restarUnEntero
+!Numero methodsFor: 'private' stamp: 'AT 5/8/2022 19:18:43'!
+substractAFraction
 	^ self subclassResponsibility.! !
 
-!Numero methodsFor: 'private' stamp: 'AT 5/5/2022 20:02:06'!
-restarUnaFraccion
-	^ self subclassResponsibility.! !
-
-!Numero methodsFor: 'private' stamp: 'AT 5/5/2022 20:01:13'!
-sumarUnEntero
-	^ self subclassResponsibility.! !
-
-!Numero methodsFor: 'private' stamp: 'AT 5/5/2022 20:01:33'!
-sumarUnaFraccion
+!Numero methodsFor: 'private' stamp: 'AT 5/8/2022 19:18:52'!
+substractAnInteger
 	^ self subclassResponsibility.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -391,15 +399,15 @@ Numero subclass: #Entero
 	^anAdder addAnInteger: self.
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:40:37'!
-- aSubtrahend 
-	
-	^ self class with: value - aSubtrahend integerValue.! !
+!Entero methodsFor: 'arithmetic operations' stamp: 'AT 5/8/2022 20:26:07'!
+- aSubtrahend 	
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+	^ aSubtrahend substractToAnInteger: self.! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'AT 5/8/2022 19:33:36'!
 / aDivisor 
 	
-	^Fraccion with: self over: aDivisor! !
+	^aDivisor divideAnInteger: self.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -485,6 +493,17 @@ addAFraction: anAdder
 addAnInteger: anAdder
 	^ Entero with: (self integerValue + anAdder integerValue).! !
 
+!Entero methodsFor: 'private' stamp: 'AT 5/8/2022 19:41:42'!
+divideAFraction: aFraction
+	| number1 number2 |
+	number1 := aFraction numerator.
+	number2 := aFraction denominator * self.
+	^ number1 / number2.! !
+
+!Entero methodsFor: 'private' stamp: 'AT 5/8/2022 19:58:33'!
+divideAnInteger: anInteger
+	^Fraccion with: anInteger over: self.! !
+
 !Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 19:08:00'!
 multiplyTimesAFraction: aMultiplier
 	| numerador|
@@ -494,6 +513,17 @@ multiplyTimesAFraction: aMultiplier
 !Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 19:02:16'!
 multiplyTimesAnInteger: aMultiplier
 	^Entero with: (self integerValue * aMultiplier integerValue).! !
+
+!Entero methodsFor: 'private' stamp: 'AT 5/8/2022 20:33:08'!
+substractToAFraction: anAdder
+	| numerador denominador|
+	denominador := anAdder denominator.
+	numerador := anAdder numerator - (anAdder denominator * self).
+	^numerador / denominador.! !
+
+!Entero methodsFor: 'private' stamp: 'AT 5/8/2022 20:28:28'!
+substractToAnInteger: anAdder
+	^ Entero with: (anAdder integerValue - self integerValue).! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -531,21 +561,16 @@ Numero subclass: #Fraccion
 + anAdder
 	^anAdder addAFraction: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:43:50'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AT 5/8/2022 20:26:22'!
 - aSubtrahend 
 	
-	| newNumerator newDenominator |
-	
-	newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
-	newDenominator := denominator * aSubtrahend denominator.
-	
-	^newNumerator / newDenominator 
+	^aSubtrahend substractToAFraction: self.
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AT 5/8/2022 20:01:36'!
 / aDivisor 
 	
-	^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)! !
+	^ aDivisor divideAFraction: self.! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -624,6 +649,24 @@ addAnInteger: anAdder
 	^numerador / denominador.
 	! !
 
+!Fraccion methodsFor: 'private' stamp: 'AT 5/8/2022 19:40:42'!
+divideAFraction: aFraction
+	| number1 number2 |
+	number1 := aFraction numerator * self denominator.
+	number2 := aFraction denominator * self numerator .
+	^ number1 / number2.
+	
+	! !
+
+!Fraccion methodsFor: 'private' stamp: 'AT 5/8/2022 19:39:02'!
+divideAnInteger: anInteger
+	| number1 number2 |
+	number1 := anInteger * self denominator.
+	number2 := self numerator.
+	^ number1 / number2.
+	
+	! !
+
 !Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 19:04:57'!
 multiplyTimesAFraction: aMultiplier
 	| numerador denominador|
@@ -639,6 +682,24 @@ multiplyTimesAnInteger: aMultiplier
 	| numerador|
 	numerador := self numerator * aMultiplier.
 	^numerador / self denominator.
+	! !
+
+!Fraccion methodsFor: 'private' stamp: 'AT 5/8/2022 20:28:42'!
+substractToAFraction: anAdder
+	| numerador denominador|
+	denominador := self denominator * anAdder denominator.
+	numerador := (self denominator * anAdder numerator) - (self numerator * anAdder denominator).
+	^(numerador / denominador).
+	
+	
+	! !
+
+!Fraccion methodsFor: 'private' stamp: 'AT 5/8/2022 20:31:20'!
+substractToAnInteger: anAdder
+	| numerador denominador|
+	denominador := self denominator.
+	numerador := (self denominator * anAdder) - self numerator.
+	^numerador / denominador.
 	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
