@@ -380,22 +380,15 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AT 5/5/2022 20:35:49'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'IACS 5/8/2022 19:02:36'!
 * aMultiplier 
 	
-	^ aMultiplier multiplicarPorUnEntero: self.
+	^ aMultiplier multiplyTimesAnInteger: self.
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AT 5/5/2022 20:14:05'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'IACS 5/8/2022 19:02:41'!
 + anAdder 
-	"| numerador denominador|
-	(anAdder  isKindOf: Entero)ifTrue: [^self class with: value + anAdder integerValue].
-	(anAdder isKindOf: Fraccion)ifTrue: [
-		denominador := anAdder denominator.
-		numerador := (anAdder denominator * self) + anAdder numerator.
-		^numerador / denominador.
-		]."
-	^anAdder sumarUnEntero: self.
+	^anAdder addAnInteger: self.
 ! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:40:37'!
@@ -481,26 +474,26 @@ greatestCommonDivisorWith: anEntero
 	^self class with: (value gcd: anEntero integerValue)! !
 
 
-!Entero methodsFor: 'private' stamp: 'AT 5/5/2022 20:36:09'!
-multiplicarPorUnEntero: aMultiplier
-	^Entero with: (self integerValue * aMultiplier integerValue).! !
-
-!Entero methodsFor: 'private' stamp: 'AT 5/5/2022 20:45:34'!
-multiplicarPorUnaFraccion: aMultiplier
-	| numerador|
-	numerador := aMultiplier numerator * self.
-	^numerador / aMultiplier denominator.! !
-
-!Entero methodsFor: 'private' stamp: 'AT 5/5/2022 20:14:15'!
-sumarUnEntero: anAdder
-	^ Entero with: (self integerValue + anAdder integerValue).! !
-
-!Entero methodsFor: 'private' stamp: 'AT 5/5/2022 20:07:23'!
-sumarUnaFraccion: anAdder
+!Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 19:05:53'!
+addAFraction: anAdder
 	| numerador denominador|
 	denominador := anAdder denominator.
 	numerador := (anAdder denominator * self) + anAdder numerator.
 	^numerador / denominador.! !
+
+!Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 19:02:57'!
+addAnInteger: anAdder
+	^ Entero with: (self integerValue + anAdder integerValue).! !
+
+!Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 19:08:00'!
+multiplyTimesAFraction: aMultiplier
+	| numerador|
+	numerador := aMultiplier numerator * self.
+	^numerador / aMultiplier denominator.! !
+
+!Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 19:02:16'!
+multiplyTimesAnInteger: aMultiplier
+	^Entero with: (self integerValue * aMultiplier integerValue).! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -528,22 +521,15 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AT 5/5/2022 20:30:13'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'IACS 5/8/2022 19:03:31'!
 * aMultiplier 
 
-	^aMultiplier multiplicarPorUnaFraccion: self.
+	^aMultiplier multiplyTimesAFraction: self.
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AT 5/5/2022 20:19:56'!
-+ anAdder 
-	
-	"| newNumerator newDenominator |
-	
-	newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
-	newDenominator := denominator * anAdder denominator.
-	
-	^newNumerator / newDenominator "
-	^anAdder sumarUnaFraccion: self.! !
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'IACS 5/8/2022 19:03:52'!
++ anAdder
+	^anAdder addAFraction: self.! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:43:50'!
 - aSubtrahend 
@@ -620,15 +606,26 @@ printOn: aStream
 		print: denominator ! !
 
 
-!Fraccion methodsFor: 'private' stamp: 'AT 5/5/2022 20:43:49'!
-multiplicarPorUnEntero: aMultiplier
-	| numerador|
-	numerador := self numerator * aMultiplier.
-	^numerador / self denominator.
+!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 19:04:19'!
+addAFraction: anAdder
+	| numerador denominador|
+	denominador := self denominator * anAdder denominator.
+	numerador := (self denominator * anAdder numerator) + (self numerator * anAdder denominator).
+	^(numerador / denominador).
+	
+	
 	! !
 
-!Fraccion methodsFor: 'private' stamp: 'AT 5/5/2022 20:34:56'!
-multiplicarPorUnaFraccion: aMultiplier
+!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 19:04:39'!
+addAnInteger: anAdder
+	| numerador denominador|
+	denominador := self denominator.
+	numerador := (self denominator * anAdder) + self numerator.
+	^numerador / denominador.
+	! !
+
+!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 19:04:57'!
+multiplyTimesAFraction: aMultiplier
 	| numerador denominador|
 	denominador := self denominator * aMultiplier denominator.
 	numerador := self numerator * aMultiplier numerator.
@@ -637,22 +634,11 @@ multiplicarPorUnaFraccion: aMultiplier
 	
 	! !
 
-!Fraccion methodsFor: 'private' stamp: 'AT 5/5/2022 20:10:17'!
-sumarUnEntero: anAdder
-	| numerador denominador|
-	denominador := self denominator.
-	numerador := (self denominator * anAdder) + self numerator.
-	^numerador / denominador.
-	! !
-
-!Fraccion methodsFor: 'private' stamp: 'AT 5/5/2022 20:18:12'!
-sumarUnaFraccion: anAdder
-	| numerador denominador|
-	denominador := self denominator * anAdder denominator.
-	numerador := (self denominator * anAdder numerator) + (self numerator * anAdder denominator).
-	^(numerador / denominador).
-	
-	
+!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 19:05:13'!
+multiplyTimesAnInteger: aMultiplier
+	| numerador|
+	numerador := self numerator * aMultiplier.
+	^numerador / self denominator.
 	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
