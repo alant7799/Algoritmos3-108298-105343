@@ -357,13 +357,21 @@ invalidNumberType
 
 	self error: self class invalidNumberTypeErrorDescription! !
 
-!Numero methodsFor: 'private' stamp: 'AT 5/8/2022 19:18:43'!
-substractAFraction
+!Numero methodsFor: 'private' stamp: 'IACS 5/8/2022 21:27:45'!
+multiplyTimesAFraction
+	^self subclassResponsibility.! !
+
+!Numero methodsFor: 'private' stamp: 'IACS 5/8/2022 21:27:53'!
+multiplyTimesAnInteger
+	^self subclassResponsibility.! !
+
+!Numero methodsFor: 'private' stamp: 'IACS 5/8/2022 21:20:57'!
+subtractAnInteger
 	^ self subclassResponsibility.! !
 
-!Numero methodsFor: 'private' stamp: 'AT 5/8/2022 19:18:52'!
-substractAnInteger
-	^ self subclassResponsibility.! !
+!Numero methodsFor: 'private' stamp: 'IACS 5/8/2022 21:24:10'!
+subtractToAFraction
+	^self subclassResponsibility.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -399,10 +407,10 @@ Numero subclass: #Entero
 	^anAdder addAnInteger: self.
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AT 5/8/2022 20:26:07'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'IACS 5/8/2022 21:25:20'!
 - aSubtrahend 	
 
-	^ aSubtrahend substractToAnInteger: self.! !
+	^ aSubtrahend subtractToAnInteger: self.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'AT 5/8/2022 19:33:36'!
 / aDivisor 
@@ -482,48 +490,48 @@ greatestCommonDivisorWith: anEntero
 	^self class with: (value gcd: anEntero integerValue)! !
 
 
-!Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 19:05:53'!
+!Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 21:39:07'!
 addAFraction: anAdder
-	| numerador denominador|
-	denominador := anAdder denominator.
-	numerador := (anAdder denominator * self) + anAdder numerator.
-	^numerador / denominador.! !
+	| newNumerator newDenominator |
+	newDenominator := anAdder denominator.
+	newNumerator := (anAdder denominator * self) + anAdder numerator.
+	^newNumerator / newDenominator.! !
 
 !Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 19:02:57'!
 addAnInteger: anAdder
 	^ Entero with: (self integerValue + anAdder integerValue).! !
 
-!Entero methodsFor: 'private' stamp: 'AT 5/8/2022 19:41:42'!
+!Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 21:39:33'!
 divideAFraction: aFraction
-	| number1 number2 |
-	number1 := aFraction numerator.
-	number2 := aFraction denominator * self.
-	^ number1 / number2.! !
+	| newNumerator newDenominator |
+	newNumerator := aFraction numerator.
+	newDenominator := aFraction denominator * self.
+	^ newNumerator / newDenominator.! !
 
 !Entero methodsFor: 'private' stamp: 'AT 5/8/2022 19:58:33'!
 divideAnInteger: anInteger
 	^Fraccion with: anInteger over: self.! !
 
-!Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 19:08:00'!
+!Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 21:41:34'!
 multiplyTimesAFraction: aMultiplier
-	| numerador|
-	numerador := aMultiplier numerator * self.
-	^numerador / aMultiplier denominator.! !
+	| newNumerator |
+	newNumerator := aMultiplier numerator * self.
+	^newNumerator / aMultiplier denominator.! !
 
 !Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 19:02:16'!
 multiplyTimesAnInteger: aMultiplier
 	^Entero with: (self integerValue * aMultiplier integerValue).! !
 
-!Entero methodsFor: 'private' stamp: 'AT 5/8/2022 20:33:08'!
-substractToAFraction: anAdder
-	| numerador denominador|
-	denominador := anAdder denominator.
-	numerador := anAdder numerator - (anAdder denominator * self).
-	^numerador / denominador.! !
+!Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 21:42:00'!
+subtractToAFraction: aFraction
+	| newNumerator newDenominator|
+	newDenominator := aFraction denominator.
+	newNumerator := aFraction numerator - (aFraction denominator * self).
+	^newNumerator / newDenominator.! !
 
-!Entero methodsFor: 'private' stamp: 'AT 5/8/2022 20:28:28'!
-substractToAnInteger: anAdder
-	^ Entero with: (anAdder integerValue - self integerValue).! !
+!Entero methodsFor: 'private' stamp: 'IACS 5/8/2022 21:29:29'!
+subtractToAnInteger: anInteger
+	^ Entero with: (anInteger integerValue - self integerValue).! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -561,10 +569,10 @@ Numero subclass: #Fraccion
 + anAdder
 	^anAdder addAFraction: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AT 5/8/2022 20:26:22'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'IACS 5/8/2022 21:25:26'!
 - aSubtrahend 
 	
-	^aSubtrahend substractToAFraction: self.
+	^aSubtrahend subtractToAFraction: self.
 ! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'AT 5/8/2022 20:01:36'!
@@ -631,75 +639,72 @@ printOn: aStream
 		print: denominator ! !
 
 
-!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 19:04:19'!
+!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 21:33:54'!
 addAFraction: anAdder
-	| numerador denominador|
-	denominador := self denominator * anAdder denominator.
-	numerador := (self denominator * anAdder numerator) + (self numerator * anAdder denominator).
-	^(numerador / denominador).
+	| newNumerator newDenominator |
+	newDenominator := self denominator * anAdder denominator.
+	newNumerator := (self denominator * anAdder numerator) + (self numerator * anAdder denominator).
+	^(newNumerator / newDenominator).
 	
 	
 	! !
 
-!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 19:04:39'!
+!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 21:32:24'!
 addAnInteger: anAdder
-	| numerador denominador|
-	denominador := self denominator.
-	numerador := (self denominator * anAdder) + self numerator.
-	^numerador / denominador.
+	| newNumerator newDenominator|
+	newDenominator := self denominator.
+	newNumerator := (self denominator * anAdder) + self numerator.
+	^newNumerator / newDenominator.
 	! !
 
-!Fraccion methodsFor: 'private' stamp: 'AT 5/8/2022 19:40:42'!
+!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 21:33:26'!
 divideAFraction: aFraction
-	| number1 number2 |
-	number1 := aFraction numerator * self denominator.
-	number2 := aFraction denominator * self numerator .
-	^ number1 / number2.
-	
-	! !
+	| newNumerator newDenominator |
+	newNumerator := aFraction numerator * self denominator.
+	newDenominator := aFraction denominator * self numerator .
+	^ newNumerator / newDenominator.! !
 
-!Fraccion methodsFor: 'private' stamp: 'AT 5/8/2022 19:39:02'!
+!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 21:34:29'!
 divideAnInteger: anInteger
-	| number1 number2 |
-	number1 := anInteger * self denominator.
-	number2 := self numerator.
-	^ number1 / number2.
+	| newNumerator newDenominator |
+	newNumerator := anInteger * self denominator.
+	newDenominator := self numerator.
+	^ newNumerator / newDenominator.
 	
 	! !
 
-!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 19:04:57'!
+!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 21:36:13'!
 multiplyTimesAFraction: aMultiplier
-	| numerador denominador|
-	denominador := self denominator * aMultiplier denominator.
-	numerador := self numerator * aMultiplier numerator.
-	^(numerador / denominador).
-	
-	
-	! !
+	| newNumerator newDenominator |
+	newDenominator := self denominator * aMultiplier denominator.
+	newNumerator := self numerator * aMultiplier numerator.
+	^(newNumerator / newDenominator).	! !
 
-!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 19:05:13'!
+!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 21:36:37'!
 multiplyTimesAnInteger: aMultiplier
-	| numerador|
-	numerador := self numerator * aMultiplier.
-	^numerador / self denominator.
+	| newNumerator |
+	newNumerator := self numerator * aMultiplier.
+	^newNumerator / self denominator.
 	! !
 
-!Fraccion methodsFor: 'private' stamp: 'AT 5/8/2022 20:28:42'!
-substractToAFraction: anAdder
-	| numerador denominador|
-	denominador := self denominator * anAdder denominator.
-	numerador := (self denominator * anAdder numerator) - (self numerator * anAdder denominator).
-	^(numerador / denominador).
+!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 21:37:03'!
+subtractToAFraction: aFraction
+
+	| newNumerator newDenominator|
 	
+	newDenominator := self denominator * aFraction denominator.
 	
+	newNumerator := (self denominator * aFraction numerator) - (self numerator * aFraction denominator).
+	
+	^(newNumerator / newDenominator).
 	! !
 
-!Fraccion methodsFor: 'private' stamp: 'AT 5/8/2022 20:31:20'!
-substractToAnInteger: anAdder
-	| numerador denominador|
-	denominador := self denominator.
-	numerador := (self denominator * anAdder) - self numerator.
-	^numerador / denominador.
+!Fraccion methodsFor: 'private' stamp: 'IACS 5/8/2022 21:38:22'!
+subtractToAnInteger: anAdder
+	| newNumerator newDenominator|
+	newDenominator := self denominator.
+	newNumerator := (self denominator * anAdder) - self numerator.
+	^newNumerator / newDenominator.
 	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
