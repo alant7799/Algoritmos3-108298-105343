@@ -1,3 +1,168 @@
+!classDefinition: #OOQueue category: 'Stack-Exercise'!
+TestCase subclass: #OOQueue
+	instanceVariableNames: 'content'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OOQueue methodsFor: 'public' stamp: 'IACS 5/15/2022 11:41:38'!
+dequeue
+	self checkIfWeCanDequeue.
+	^content removeFirst.! !
+
+!OOQueue methodsFor: 'public' stamp: 'IACS 5/15/2022 11:46:58'!
+enqueue: aString
+	content addLast: aString.! !
+
+!OOQueue methodsFor: 'public' stamp: 'IACS 5/15/2022 11:49:48'!
+front
+	self checkIfThereIsAFront.
+	^content first.! !
+
+!OOQueue methodsFor: 'public' stamp: 'IACS 5/15/2022 11:13:20'!
+isEmpty
+	^self size = 0.! !
+
+!OOQueue methodsFor: 'public' stamp: 'IACS 5/15/2022 11:13:54'!
+size
+	^content size.! !
+
+
+!OOQueue methodsFor: 'private' stamp: 'IACS 5/15/2022 11:30:48'!
+checkIfThereIsAFront
+	| currentState |
+	currentState := OOQueueState subclasses detect: [:aState | aState thisStateIsTheCurrentStateOf: self].
+	currentState frontResponse.! !
+
+!OOQueue methodsFor: 'private' stamp: 'IACS 5/15/2022 11:37:45'!
+checkIfWeCanDequeue
+	| currentState |
+	currentState := OOQueueState subclasses detect: [:aState | aState thisStateIsTheCurrentStateOf: self].
+	currentState dequeueResponse.! !
+
+!OOQueue methodsFor: 'private' stamp: 'IACS 5/15/2022 11:12:46'!
+initialize
+	content := OrderedCollection new.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'OOQueue class' category: 'Stack-Exercise'!
+OOQueue class
+	instanceVariableNames: ''!
+
+!OOQueue class methodsFor: 'error descriptions' stamp: 'IACS 5/15/2022 11:28:52'!
+queueEmptyErrorDescription
+	
+	^ 'Queue is empty'! !
+
+
+!classDefinition: #OOQueueTest category: 'Stack-Exercise'!
+TestCase subclass: #OOQueueTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:33:49'!
+test01QueueShouldBeEmptyWhenCreated
+
+	| queue |
+	
+	queue := OOQueue new.
+	
+	self assert: queue isEmpty! !
+
+!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:36:50'!
+test02EnqueueAddElementsToTheQueue
+
+	| queue |
+	
+	queue := OOQueue new.
+	queue enqueue: 'something'.
+	
+	self deny: queue isEmpty! !
+
+!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:39:01'!
+test03DequeueRemovesElementsFromTheQueue
+
+	| queue |
+	
+	queue := OOQueue new.
+	queue enqueue: 'something'.
+	queue dequeue.
+	
+	self assert: queue isEmpty! !
+
+!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:42:03'!
+test04DequeueReturnsFirstEnqueuedObject
+
+	| queue enqueuedObject |
+	
+	queue := OOQueue new.
+	enqueuedObject := 'something'.
+	queue enqueue: enqueuedObject.
+	
+	self assert: queue dequeue = enqueuedObject! !
+
+!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:44:11'!
+test05QueueBehavesFIFO
+
+	| queue firstEnqueuedObject secondEnqueuedObject |
+	
+	queue := OOQueue new.
+	firstEnqueuedObject := 'first'.
+	secondEnqueuedObject := 'second'.
+	
+	queue enqueue: firstEnqueuedObject.
+	queue enqueue: secondEnqueuedObject.
+	
+	self assert: queue dequeue = firstEnqueuedObject.
+	self assert: queue dequeue = secondEnqueuedObject.
+	self assert: queue isEmpty 
+	! !
+
+!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:49:10'!
+test06FrontReturnsFirstEnqueuedObject
+
+	| queue enqueuedObject |
+	
+	queue := OOQueue new.
+	enqueuedObject := 'something'.
+	
+	queue enqueue: enqueuedObject.
+	
+	self assert: queue front = enqueuedObject.
+	! !
+
+!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:51:22'!
+test07CanNotDequeueWhenThereAreNoObjectsInTheQueue
+
+	| queue |
+	
+	queue := OOQueue new.
+	self
+		should: [ queue dequeue ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = OOQueue queueEmptyErrorDescription ]
+		
+! !
+
+!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:51:51'!
+test08CanNotFrontWhenThereAreNoObjectsInTheQueue
+
+	| queue |
+	
+	queue := OOQueue new.
+	self
+		should: [ queue front ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = OOQueue queueEmptyErrorDescription ]
+		
+! !
+
+
 !classDefinition: #OOStackTest category: 'Stack-Exercise'!
 TestCase subclass: #OOStackTest
 	instanceVariableNames: ''
@@ -145,16 +310,91 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	category: 'Stack-Exercise'!
 
 
+!classDefinition: #OOQueueState category: 'Stack-Exercise'!
+Object subclass: #OOQueueState
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'OOQueueState class' category: 'Stack-Exercise'!
+OOQueueState class
+	instanceVariableNames: ''!
+
+!OOQueueState class methodsFor: 'state verification' stamp: 'IACS 5/15/2022 11:22:34'!
+thisStateIsTheCurrentStateOf: aQueue
+	self subclassResponsibility.! !
+
+
+!OOQueueState class methodsFor: 'state responses' stamp: 'IACS 5/15/2022 11:37:56'!
+dequeueResponse
+	self subclassResponsibility.! !
+
+!OOQueueState class methodsFor: 'state responses' stamp: 'IACS 5/15/2022 11:22:55'!
+frontResponse
+	self subclassResponsibility.! !
+
+
+!classDefinition: #EmptyQueue category: 'Stack-Exercise'!
+OOQueueState subclass: #EmptyQueue
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'EmptyQueue class' category: 'Stack-Exercise'!
+EmptyQueue class
+	instanceVariableNames: ''!
+
+!EmptyQueue class methodsFor: 'state responses' stamp: 'IACS 5/15/2022 11:29:36'!
+dequeueResponse
+	self error: OOQueue queueEmptyErrorDescription! !
+
+!EmptyQueue class methodsFor: 'state responses' stamp: 'IACS 5/15/2022 11:29:42'!
+frontResponse
+	self error: OOQueue queueEmptyErrorDescription! !
+
+
+!EmptyQueue class methodsFor: 'state verification' stamp: 'IACS 5/15/2022 11:27:03'!
+thisStateIsTheCurrentStateOf: aQueue
+	^aQueue isEmpty.! !
+
+
+!classDefinition: #UnemptyQueue category: 'Stack-Exercise'!
+OOQueueState subclass: #UnemptyQueue
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'UnemptyQueue class' category: 'Stack-Exercise'!
+UnemptyQueue class
+	instanceVariableNames: ''!
+
+!UnemptyQueue class methodsFor: 'state responses' stamp: 'IACS 5/15/2022 11:29:58'!
+dequeueResponse! !
+
+!UnemptyQueue class methodsFor: 'state responses' stamp: 'IACS 5/15/2022 11:29:53'!
+frontResponse! !
+
+
+!UnemptyQueue class methodsFor: 'state verification' stamp: 'IACS 5/15/2022 11:26:27'!
+thisStateIsTheCurrentStateOf: aQueue
+	^(aQueue isEmpty) not.! !
+
+
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
 	instanceVariableNames: 'content'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
-
-!OOStack methodsFor: 'Public' stamp: 'AT 5/12/2022 19:54:52'!
-initialize
-	content := OrderedCollection new.! !
 
 !OOStack methodsFor: 'Public' stamp: 'AT 5/12/2022 20:04:56'!
 isEmpty
@@ -189,6 +429,10 @@ checkIfWeCanPop	| currentState |
 	currentState := OOStackState subclasses detect: [:aState | aState thisStateIsTheCurrentStateOf: self].
 	currentState popResponse.! !
 
+!OOStack methodsFor: 'Private' stamp: 'AT 5/12/2022 19:54:52'!
+initialize
+	content := OrderedCollection new.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'OOStack class' category: 'Stack-Exercise'!
@@ -203,7 +447,7 @@ stackEmptyErrorDescription
 
 !classDefinition: #OOStackState category: 'Stack-Exercise'!
 Object subclass: #OOStackState
-	instanceVariableNames: 'content'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
@@ -228,8 +472,8 @@ thisStateIsTheCurrentStateOf: aStack
 	self subclassResponsibility.! !
 
 
-!classDefinition: #Empty category: 'Stack-Exercise'!
-OOStackState subclass: #Empty
+!classDefinition: #EmptyStack category: 'Stack-Exercise'!
+OOStackState subclass: #EmptyStack
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -237,26 +481,26 @@ OOStackState subclass: #Empty
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'Empty class' category: 'Stack-Exercise'!
-Empty class
+!classDefinition: 'EmptyStack class' category: 'Stack-Exercise'!
+EmptyStack class
 	instanceVariableNames: ''!
 
-!Empty class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:13:11'!
+!EmptyStack class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:13:11'!
 popResponse
 	self error: OOStack stackEmptyErrorDescription! !
 
-!Empty class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:13:16'!
+!EmptyStack class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:13:16'!
 topResponse
 	self error: OOStack stackEmptyErrorDescription! !
 
 
-!Empty class methodsFor: 'state verification' stamp: 'IACS 5/14/2022 22:05:10'!
+!EmptyStack class methodsFor: 'state verification' stamp: 'IACS 5/14/2022 22:05:10'!
 thisStateIsTheCurrentStateOf: aStack
 	^aStack isEmpty.! !
 
 
-!classDefinition: #Unempty category: 'Stack-Exercise'!
-OOStackState subclass: #Unempty
+!classDefinition: #UnemptyStack category: 'Stack-Exercise'!
+OOStackState subclass: #UnemptyStack
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -264,18 +508,18 @@ OOStackState subclass: #Unempty
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'Unempty class' category: 'Stack-Exercise'!
-Unempty class
+!classDefinition: 'UnemptyStack class' category: 'Stack-Exercise'!
+UnemptyStack class
 	instanceVariableNames: ''!
 
-!Unempty class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:09:56'!
+!UnemptyStack class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:09:56'!
 popResponse! !
 
-!Unempty class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:10:02'!
+!UnemptyStack class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:10:02'!
 topResponse! !
 
 
-!Unempty class methodsFor: 'state verification' stamp: 'IACS 5/14/2022 22:10:22'!
+!UnemptyStack class methodsFor: 'state verification' stamp: 'IACS 5/14/2022 22:10:22'!
 thisStateIsTheCurrentStateOf: aStack
 	^(aStack isEmpty) not.! !
 
