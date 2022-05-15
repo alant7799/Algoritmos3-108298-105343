@@ -160,9 +160,9 @@ initialize
 isEmpty
 	^self size = 0.! !
 
-!OOStack methodsFor: 'Public' stamp: 'AT 5/12/2022 20:16:52'!
+!OOStack methodsFor: 'Public' stamp: 'IACS 5/14/2022 22:10:45'!
 pop
-	self checkIfStackIsNotEmpty.
+	self checkIfWeCanPop.
 	^content removeLast.! !
 
 !OOStack methodsFor: 'Public' stamp: 'AT 5/12/2022 19:57:34'!
@@ -173,15 +173,21 @@ push: aString
 size
 	^content size.! !
 
-!OOStack methodsFor: 'Public' stamp: 'AT 5/12/2022 20:16:35'!
+!OOStack methodsFor: 'Public' stamp: 'IACS 5/14/2022 22:12:08'!
 top
-	self checkIfStackIsNotEmpty.
+	self checkIfThereIsATop.
 	^content last.! !
 
 
-!OOStack methodsFor: 'Private' stamp: 'AT 5/12/2022 20:15:49'!
-checkIfStackIsNotEmpty
-	(self isEmpty) ifTrue: [self error: self class stackEmptyErrorDescription].! !
+!OOStack methodsFor: 'Private' stamp: 'IACS 5/14/2022 22:12:22'!
+checkIfThereIsATop	| currentState |
+	currentState := OOStackState subclasses detect: [:aState | aState thisStateIsTheCurrentStateOf: self].
+	currentState topResponse.! !
+
+!OOStack methodsFor: 'Private' stamp: 'IACS 5/14/2022 22:11:41'!
+checkIfWeCanPop	| currentState |
+	currentState := OOStackState subclasses detect: [:aState | aState thisStateIsTheCurrentStateOf: self].
+	currentState popResponse.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -193,6 +199,85 @@ OOStack class
 stackEmptyErrorDescription
 	
 	^ 'Stack is empty'! !
+
+
+!classDefinition: #OOStackState category: 'Stack-Exercise'!
+Object subclass: #OOStackState
+	instanceVariableNames: 'content'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'OOStackState class' category: 'Stack-Exercise'!
+OOStackState class
+	instanceVariableNames: ''!
+
+!OOStackState class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:09:00'!
+popResponse
+	self subclassResponsibility.! !
+
+!OOStackState class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:09:03'!
+topResponse
+	self subclassResponsibility.! !
+
+
+!OOStackState class methodsFor: 'state verification' stamp: 'IACS 5/14/2022 22:05:34'!
+thisStateIsTheCurrentStateOf: aStack
+	self subclassResponsibility.! !
+
+
+!classDefinition: #Empty category: 'Stack-Exercise'!
+OOStackState subclass: #Empty
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Empty class' category: 'Stack-Exercise'!
+Empty class
+	instanceVariableNames: ''!
+
+!Empty class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:13:11'!
+popResponse
+	self error: OOStack stackEmptyErrorDescription! !
+
+!Empty class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:13:16'!
+topResponse
+	self error: OOStack stackEmptyErrorDescription! !
+
+
+!Empty class methodsFor: 'state verification' stamp: 'IACS 5/14/2022 22:05:10'!
+thisStateIsTheCurrentStateOf: aStack
+	^aStack isEmpty.! !
+
+
+!classDefinition: #Unempty category: 'Stack-Exercise'!
+OOStackState subclass: #Unempty
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Unempty class' category: 'Stack-Exercise'!
+Unempty class
+	instanceVariableNames: ''!
+
+!Unempty class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:09:56'!
+popResponse! !
+
+!Unempty class methodsFor: 'state responses' stamp: 'IACS 5/14/2022 22:10:02'!
+topResponse! !
+
+
+!Unempty class methodsFor: 'state verification' stamp: 'IACS 5/14/2022 22:10:22'!
+thisStateIsTheCurrentStateOf: aStack
+	^(aStack isEmpty) not.! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
