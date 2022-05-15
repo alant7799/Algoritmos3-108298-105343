@@ -1,168 +1,3 @@
-!classDefinition: #OOQueue category: 'Stack-Exercise'!
-TestCase subclass: #OOQueue
-	instanceVariableNames: 'content'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
-
-!OOQueue methodsFor: 'public' stamp: 'IACS 5/15/2022 11:41:38'!
-dequeue
-	self checkIfWeCanDequeue.
-	^content removeFirst.! !
-
-!OOQueue methodsFor: 'public' stamp: 'IACS 5/15/2022 11:46:58'!
-enqueue: aString
-	content addLast: aString.! !
-
-!OOQueue methodsFor: 'public' stamp: 'IACS 5/15/2022 11:49:48'!
-front
-	self checkIfThereIsAFront.
-	^content first.! !
-
-!OOQueue methodsFor: 'public' stamp: 'IACS 5/15/2022 11:13:20'!
-isEmpty
-	^self size = 0.! !
-
-!OOQueue methodsFor: 'public' stamp: 'IACS 5/15/2022 11:13:54'!
-size
-	^content size.! !
-
-
-!OOQueue methodsFor: 'private' stamp: 'IACS 5/15/2022 11:30:48'!
-checkIfThereIsAFront
-	| currentState |
-	currentState := OOQueueState subclasses detect: [:aState | aState thisStateIsTheCurrentStateOf: self].
-	currentState frontResponse.! !
-
-!OOQueue methodsFor: 'private' stamp: 'IACS 5/15/2022 11:37:45'!
-checkIfWeCanDequeue
-	| currentState |
-	currentState := OOQueueState subclasses detect: [:aState | aState thisStateIsTheCurrentStateOf: self].
-	currentState dequeueResponse.! !
-
-!OOQueue methodsFor: 'private' stamp: 'IACS 5/15/2022 11:12:46'!
-initialize
-	content := OrderedCollection new.! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'OOQueue class' category: 'Stack-Exercise'!
-OOQueue class
-	instanceVariableNames: ''!
-
-!OOQueue class methodsFor: 'error descriptions' stamp: 'IACS 5/15/2022 11:28:52'!
-queueEmptyErrorDescription
-	
-	^ 'Queue is empty'! !
-
-
-!classDefinition: #OOQueueTest category: 'Stack-Exercise'!
-TestCase subclass: #OOQueueTest
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
-
-!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:33:49'!
-test01QueueShouldBeEmptyWhenCreated
-
-	| queue |
-	
-	queue := OOQueue new.
-	
-	self assert: queue isEmpty! !
-
-!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:36:50'!
-test02EnqueueAddElementsToTheQueue
-
-	| queue |
-	
-	queue := OOQueue new.
-	queue enqueue: 'something'.
-	
-	self deny: queue isEmpty! !
-
-!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:39:01'!
-test03DequeueRemovesElementsFromTheQueue
-
-	| queue |
-	
-	queue := OOQueue new.
-	queue enqueue: 'something'.
-	queue dequeue.
-	
-	self assert: queue isEmpty! !
-
-!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:42:03'!
-test04DequeueReturnsFirstEnqueuedObject
-
-	| queue enqueuedObject |
-	
-	queue := OOQueue new.
-	enqueuedObject := 'something'.
-	queue enqueue: enqueuedObject.
-	
-	self assert: queue dequeue = enqueuedObject! !
-
-!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:44:11'!
-test05QueueBehavesFIFO
-
-	| queue firstEnqueuedObject secondEnqueuedObject |
-	
-	queue := OOQueue new.
-	firstEnqueuedObject := 'first'.
-	secondEnqueuedObject := 'second'.
-	
-	queue enqueue: firstEnqueuedObject.
-	queue enqueue: secondEnqueuedObject.
-	
-	self assert: queue dequeue = firstEnqueuedObject.
-	self assert: queue dequeue = secondEnqueuedObject.
-	self assert: queue isEmpty 
-	! !
-
-!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:49:10'!
-test06FrontReturnsFirstEnqueuedObject
-
-	| queue enqueuedObject |
-	
-	queue := OOQueue new.
-	enqueuedObject := 'something'.
-	
-	queue enqueue: enqueuedObject.
-	
-	self assert: queue front = enqueuedObject.
-	! !
-
-!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:51:22'!
-test07CanNotDequeueWhenThereAreNoObjectsInTheQueue
-
-	| queue |
-	
-	queue := OOQueue new.
-	self
-		should: [ queue dequeue ]
-		raise: Error - MessageNotUnderstood 
-		withExceptionDo: [ :anError |
-			self assert: anError messageText = OOQueue queueEmptyErrorDescription ]
-		
-! !
-
-!OOQueueTest methodsFor: 'test' stamp: 'IACS 5/15/2022 11:51:51'!
-test08CanNotFrontWhenThereAreNoObjectsInTheQueue
-
-	| queue |
-	
-	queue := OOQueue new.
-	self
-		should: [ queue front ]
-		raise: Error - MessageNotUnderstood 
-		withExceptionDo: [ :anError |
-			self assert: anError messageText = OOQueue queueEmptyErrorDescription ]
-		
-! !
-
-
 !classDefinition: #OOStackTest category: 'Stack-Exercise'!
 TestCase subclass: #OOStackTest
 	instanceVariableNames: ''
@@ -304,89 +139,76 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'emptyStack stackWithBuenas stackWithBuenasTardes stringBuenas stringTardes sentenceFinderByPrefix stringBuenasTardes'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-
-!classDefinition: #OOQueueState category: 'Stack-Exercise'!
-Object subclass: #OOQueueState
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/15/2022 17:22:21'!
+test1TryingToSearchInAnEmptyStackThrowsError
+	self
+		should: [ sentenceFinderByPrefix searchForPhrasesWith: stringBuenas in: emptyStack ]
+		raise: Error
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = OOStack stackEmptyErrorDescription ].! !
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/15/2022 17:23:12'!
+test2SearchingInAStackWithoutStringsWithThePrefixReturnsEmptyCollection
+	| prefix foundPhrases |
+	
+	prefix := 'Hola'.
+	foundPhrases := sentenceFinderByPrefix searchForPhrasesWith: prefix in: stackWithBuenas.
+	
+	self assert: foundPhrases size = 0.  ! !
 
-!classDefinition: 'OOQueueState class' category: 'Stack-Exercise'!
-OOQueueState class
-	instanceVariableNames: ''!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/15/2022 17:24:10'!
+test3SearchingInAStackDoesNotModifyTheSizeOfTheStack
+	| prefix |
+	
+	prefix := 'Hola'.
+	sentenceFinderByPrefix searchForPhrasesWith: prefix in: stackWithBuenas.
+	
+	self assert: stackWithBuenas size = 1.	! !
 
-!OOQueueState class methodsFor: 'state verification' stamp: 'IACS 5/15/2022 11:22:34'!
-thisStateIsTheCurrentStateOf: aQueue
-	self subclassResponsibility.! !
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/15/2022 17:24:47'!
+test4SearchingInAStackDoesNotModifyTheElementsOfTheStack
+	| prefix |
+	
+	prefix := 'Hola'.
+	sentenceFinderByPrefix searchForPhrasesWith: prefix in: stackWithBuenasTardes.
+	
+	self assert: stackWithBuenasTardes size = 1.	! !
 
-
-!OOQueueState class methodsFor: 'state responses' stamp: 'IACS 5/15/2022 11:37:56'!
-dequeueResponse
-	self subclassResponsibility.! !
-
-!OOQueueState class methodsFor: 'state responses' stamp: 'IACS 5/15/2022 11:22:55'!
-frontResponse
-	self subclassResponsibility.! !
-
-
-!classDefinition: #EmptyQueue category: 'Stack-Exercise'!
-OOQueueState subclass: #EmptyQueue
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'EmptyQueue class' category: 'Stack-Exercise'!
-EmptyQueue class
-	instanceVariableNames: ''!
-
-!EmptyQueue class methodsFor: 'state responses' stamp: 'IACS 5/15/2022 11:29:36'!
-dequeueResponse
-	self error: OOQueue queueEmptyErrorDescription! !
-
-!EmptyQueue class methodsFor: 'state responses' stamp: 'IACS 5/15/2022 11:29:42'!
-frontResponse
-	self error: OOQueue queueEmptyErrorDescription! !
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/15/2022 17:26:41'!
+test5SeachingInAStackWithStringsThatContainThePrefixYieldsTheStringsWithThePrefix
+	| prefix foundStrings |
+	
+	prefix := 'Buenas'.
+	foundStrings := sentenceFinderByPrefix searchForPhrasesWith: prefix in: stackWithBuenasTardes.
+	
+	self assert: foundStrings first =  stringBuenas.	
+	self assert: foundStrings second = stringBuenasTardes.	! !
 
 
-!EmptyQueue class methodsFor: 'state verification' stamp: 'IACS 5/15/2022 11:27:03'!
-thisStateIsTheCurrentStateOf: aQueue
-	^aQueue isEmpty.! !
+!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'IACS 5/15/2022 17:21:47'!
+setUp
 
-
-!classDefinition: #UnemptyQueue category: 'Stack-Exercise'!
-OOQueueState subclass: #UnemptyQueue
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'UnemptyQueue class' category: 'Stack-Exercise'!
-UnemptyQueue class
-	instanceVariableNames: ''!
-
-!UnemptyQueue class methodsFor: 'state responses' stamp: 'IACS 5/15/2022 11:29:58'!
-dequeueResponse! !
-
-!UnemptyQueue class methodsFor: 'state responses' stamp: 'IACS 5/15/2022 11:29:53'!
-frontResponse! !
-
-
-!UnemptyQueue class methodsFor: 'state verification' stamp: 'IACS 5/15/2022 11:26:27'!
-thisStateIsTheCurrentStateOf: aQueue
-	^(aQueue isEmpty) not.! !
+	sentenceFinderByPrefix := SentenceFinderByPrefix new.
+	
+	stringBuenas := 'buenas'.
+	stringTardes := 'tardes'.
+	stringBuenasTardes := 'buenas tardes'.
+	
+	emptyStack := OOStack new.
+	
+	stackWithBuenas := OOStack new.
+	stackWithBuenas push: stringBuenas.
+	
+	stackWithBuenasTardes := OOStack new.
+	stackWithBuenasTardes push: stringBuenas.
+	stackWithBuenasTardes push: stringTardes.
+	stackWithBuenasTardes push: stringBuenasTardes.
+	! !
 
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
@@ -526,7 +348,34 @@ thisStateIsTheCurrentStateOf: aStack
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
-	instanceVariableNames: ''
+	instanceVariableNames: 'alreadyConsideredStrings stringsWithThePrefix patternWithThePrefix'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'IACS 5/15/2022 17:53:53'!
+searchForPhrasesWith: aPrefix in: aStack
+	
+	self verifyThatTheStackIsNotEmpty: aStack.
+	self setUpSearch.
+	
+	(aStack size) timesRepeat:
+	[
+		| currentObject |
+		currentObject := aStack pop.
+		alreadyConsideredStrings add: currentObject	.
+		(currentObject beginsWith: aPrefix) ifTrue: [ stringsWithThePrefix add: currentObject ]
+	].
+
+	"alreadyConsideredStrings giveBackTheElementsTo: aStack."
+	
+	^ stringsWithThePrefix.! !
+
+!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'IACS 5/15/2022 17:52:30'!
+setUpSearch
+	alreadyConsideredStrings := OrderedCollection new.
+	stringsWithThePrefix  := OrderedCollection new.! !
+
+!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'IACS 5/15/2022 16:32:13'!
+verifyThatTheStackIsNotEmpty: aStack
+	aStack top.! !
