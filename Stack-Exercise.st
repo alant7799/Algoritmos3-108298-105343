@@ -144,38 +144,38 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/15/2022 17:22:21'!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AT 5/16/2022 00:20:40'!
 test1TryingToSearchInAnEmptyStackThrowsError
 	self
-		should: [ sentenceFinderByPrefix searchForPhrasesWith: stringBuenas in: emptyStack ]
+		should: [ sentenceFinderByPrefix searchForStringWith: stringBuenas in: emptyStack ]
 		raise: Error
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = OOStack stackEmptyErrorDescription ].! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/15/2022 17:23:12'!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AT 5/16/2022 00:20:40'!
 test2SearchingInAStackWithoutStringsWithThePrefixReturnsEmptyCollection
 	| prefix foundPhrases |
 	
 	prefix := 'Hola'.
-	foundPhrases := sentenceFinderByPrefix searchForPhrasesWith: prefix in: stackWithBuenas.
+	foundPhrases := sentenceFinderByPrefix searchForStringWith: prefix in: stackWithBuenas.
 	
 	self assert: foundPhrases size = 0.  ! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/15/2022 17:24:10'!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AT 5/16/2022 00:20:40'!
 test3SearchingInAStackDoesNotModifyTheSizeOfTheStack
 	| prefix |
 	
 	prefix := 'Hola'.
-	sentenceFinderByPrefix searchForPhrasesWith: prefix in: stackWithBuenas.
+	sentenceFinderByPrefix searchForStringWith: prefix in: stackWithBuenas.
 	
 	self assert: stackWithBuenas size = 1.	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AT 5/15/2022 23:00:32'!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AT 5/16/2022 00:20:40'!
 test4SearchingInAStackDoesNotModifyTheElementsOrder
 	| prefix |
 	
 	prefix := 'Hola'.
-	sentenceFinderByPrefix searchForPhrasesWith: prefix in: stackWithBuenasTardes.
+	sentenceFinderByPrefix searchForStringWith: prefix in: stackWithBuenasTardes.
 	
 	stringBuenas := 'buenas'.
 	stringTardes := 'tardes'.
@@ -185,33 +185,42 @@ test4SearchingInAStackDoesNotModifyTheElementsOrder
 	self assert: stringTardes = stackWithBuenasTardes pop.
 	self assert: stringBuenas = stackWithBuenasTardes pop.! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/15/2022 22:14:50'!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AT 5/16/2022 00:20:40'!
 test5SeachingInAStackWithStringsThatContainThePrefixYieldsTheStringsWithThePrefix
 	| prefix foundStrings |
 	
 	prefix := 'buenas'.
-	foundStrings := sentenceFinderByPrefix searchForPhrasesWith: prefix in: stackWithBuenasTardes.
+	foundStrings := sentenceFinderByPrefix searchForStringWith: prefix in: stackWithBuenasTardes.
 	
 	self assert: foundStrings first =  stringBuenasTardes.	
 	self assert: foundStrings second = stringBuenas.	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/16/2022 00:12:19'!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AT 5/16/2022 00:20:40'!
 test6TryingToSearchWithAPrefixWithBlanksThrowsError
 self
-	should: [ sentenceFinderByPrefix searchForPhrasesWith: ' Buenas' in: stackWithBuenas ]
+	should: [ sentenceFinderByPrefix searchForStringWith: ' Buenas' in: stackWithBuenas ]
 	raise: Error
 	withExceptionDo: [ :anError |
 		self assert: anError messageText = InvalidPrefixDueToBlank stringWithBlankErrorDescription ].! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/16/2022 00:10:28'!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AT 5/16/2022 00:20:40'!
 test7TryingToSearchWithAnEmptyPrefixThrowsAnError
 self
-	should: [ sentenceFinderByPrefix searchForPhrasesWith: '' in: stackWithBuenas ]
+	should: [ sentenceFinderByPrefix searchForStringWith: '' in: stackWithBuenas ]
 	raise: Error
 	withExceptionDo: [ :anError |
 		self assert: anError messageText = InvalidPrefixDueToEmptyString emptyStringErrorDescription ].
 
 ! !
+
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AT 5/16/2022 00:20:40'!
+test8SeachInAstackWithStringsIsCaseSensitive
+	| prefix foundStrings |
+	
+	prefix := 'Buenas'.
+	foundStrings := sentenceFinderByPrefix searchForStringWith: prefix in: stackWithBuenasTardes.
+	
+	self assert: foundStrings isEmpty.	! !
 
 
 !SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'IACS 5/15/2022 17:21:47'!
@@ -485,8 +494,8 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'AT 5/15/2022 23:59:15'!
-searchForPhrasesWith: aPrefix in: aStack
+!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'AT 5/16/2022 00:20:40'!
+searchForStringWith: aPrefix in: aStack
 	
 	Prefix isThatGivenStringIsAValidPrefix: aPrefix.
 	self verifyThatTheStackIsNotEmpty: aStack.
