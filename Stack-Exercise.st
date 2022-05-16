@@ -179,15 +179,15 @@ test4SearchingInAStackDoesNotModifyTheElementsOfTheStack
 	
 	self assert: stackWithBuenasTardes size = 1.	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/15/2022 17:26:41'!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/15/2022 22:14:50'!
 test5SeachingInAStackWithStringsThatContainThePrefixYieldsTheStringsWithThePrefix
 	| prefix foundStrings |
 	
-	prefix := 'Buenas'.
+	prefix := 'buenas'.
 	foundStrings := sentenceFinderByPrefix searchForPhrasesWith: prefix in: stackWithBuenasTardes.
 	
-	self assert: foundStrings first =  stringBuenas.	
-	self assert: foundStrings second = stringBuenasTardes.	! !
+	self assert: foundStrings first =  stringBuenasTardes.	
+	self assert: foundStrings second = stringBuenas.	! !
 
 
 !SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'IACS 5/15/2022 17:21:47'!
@@ -353,7 +353,7 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'IACS 5/15/2022 17:53:53'!
+!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'IACS 5/15/2022 22:10:13'!
 searchForPhrasesWith: aPrefix in: aStack
 	
 	self verifyThatTheStackIsNotEmpty: aStack.
@@ -367,9 +367,12 @@ searchForPhrasesWith: aPrefix in: aStack
 		(currentObject beginsWith: aPrefix) ifTrue: [ stringsWithThePrefix add: currentObject ]
 	].
 
-	"alreadyConsideredStrings giveBackTheElementsTo: aStack."
+	self sendBackAllElementsFrom: alreadyConsideredStrings To: aStack.
 	
 	^ stringsWithThePrefix.! !
+
+!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'IACS 5/15/2022 22:11:41'!
+sendBackAllElementsFrom: aCollectionOfTheStringsTaken To: aStack! !
 
 !SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'IACS 5/15/2022 17:52:30'!
 setUpSearch
