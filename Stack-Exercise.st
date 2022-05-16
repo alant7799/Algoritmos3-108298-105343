@@ -195,6 +195,24 @@ test5SeachingInAStackWithStringsThatContainThePrefixYieldsTheStringsWithThePrefi
 	self assert: foundStrings first =  stringBuenasTardes.	
 	self assert: foundStrings second = stringBuenas.	! !
 
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/16/2022 00:12:19'!
+test6TryingToSearchWithAPrefixWithBlanksThrowsError
+self
+	should: [ sentenceFinderByPrefix searchForPhrasesWith: ' Buenas' in: stackWithBuenas ]
+	raise: Error
+	withExceptionDo: [ :anError |
+		self assert: anError messageText = InvalidPrefixDueToBlank stringWithBlankErrorDescription ].! !
+
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/16/2022 00:10:28'!
+test7TryingToSearchWithAnEmptyPrefixThrowsAnError
+self
+	should: [ sentenceFinderByPrefix searchForPhrasesWith: '' in: stackWithBuenas ]
+	raise: Error
+	withExceptionDo: [ :anError |
+		self assert: anError messageText = InvalidPrefixDueToEmptyString emptyStringErrorDescription ].
+
+! !
+
 
 !SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'IACS 5/15/2022 17:21:47'!
 setUp
@@ -384,8 +402,8 @@ stringIsFromThisSubclass: aString
 	self subclassResponsibility.! !
 
 
-!classDefinition: #InvalidPrefixDueToBlanc category: 'Stack-Exercise'!
-Prefix subclass: #InvalidPrefixDueToBlanc
+!classDefinition: #InvalidPrefixDueToBlank category: 'Stack-Exercise'!
+Prefix subclass: #InvalidPrefixDueToBlank
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -393,23 +411,23 @@ Prefix subclass: #InvalidPrefixDueToBlanc
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'InvalidPrefixDueToBlanc class' category: 'Stack-Exercise'!
-InvalidPrefixDueToBlanc class
+!classDefinition: 'InvalidPrefixDueToBlank class' category: 'Stack-Exercise'!
+InvalidPrefixDueToBlank class
 	instanceVariableNames: ''!
 
-!InvalidPrefixDueToBlanc class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:48:06'!
+!InvalidPrefixDueToBlank class methodsFor: 'as yet unclassified' stamp: 'IACS 5/16/2022 00:11:40'!
 isValid
 	
-	self error: InvalidPrefixDueToBlanc stringErrorDescription.! !
+	self error: InvalidPrefixDueToBlank stringWithBlankErrorDescription.! !
 
-!InvalidPrefixDueToBlanc class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:39:28'!
+!InvalidPrefixDueToBlank class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:39:28'!
 stringIsFromThisSubclass: aString
 	^ aString includesSubString: ' '.! !
 
-!InvalidPrefixDueToBlanc class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:53:38'!
-stringWithBlancErrorDescription
+!InvalidPrefixDueToBlank class methodsFor: 'as yet unclassified' stamp: 'IACS 5/16/2022 00:11:26'!
+stringWithBlankErrorDescription
 	
-	^'string has blanc character.'.! !
+	^'string has blank character.'.! !
 
 
 !classDefinition: #InvalidPrefixDueToEmptyString category: 'Stack-Exercise'!
@@ -455,9 +473,9 @@ ValidPrefix class
 !ValidPrefix class methodsFor: 'as yet unclassified' stamp: 'AT 5/16/2022 00:01:18'!
 isValid! !
 
-!ValidPrefix class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:38:54'!
+!ValidPrefix class methodsFor: 'as yet unclassified' stamp: 'IACS 5/16/2022 00:07:25'!
 stringIsFromThisSubclass: aString
-	^aString isEmpty and: [aString includesSubString: ' '].! !
+	^aString isEmpty not and: (aString includesSubString: ' ') not.! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
