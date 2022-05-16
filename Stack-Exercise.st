@@ -170,14 +170,20 @@ test3SearchingInAStackDoesNotModifyTheSizeOfTheStack
 	
 	self assert: stackWithBuenas size = 1.	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/15/2022 17:24:47'!
-test4SearchingInAStackDoesNotModifyTheElementsOfTheStack
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AT 5/15/2022 23:00:32'!
+test4SearchingInAStackDoesNotModifyTheElementsOrder
 	| prefix |
 	
 	prefix := 'Hola'.
 	sentenceFinderByPrefix searchForPhrasesWith: prefix in: stackWithBuenasTardes.
 	
-	self assert: stackWithBuenasTardes size = 1.	! !
+	stringBuenas := 'buenas'.
+	stringTardes := 'tardes'.
+	stringBuenasTardes := 'buenas tardes'.
+	
+	self assert: stringBuenasTardes = stackWithBuenasTardes pop.
+	self assert: stringTardes = stackWithBuenasTardes pop.
+	self assert: stringBuenas = stackWithBuenasTardes pop.! !
 
 !SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'IACS 5/15/2022 22:14:50'!
 test5SeachingInAStackWithStringsThatContainThePrefixYieldsTheStringsWithThePrefix
@@ -346,6 +352,114 @@ thisStateIsTheCurrentStateOf: aStack
 	^(aStack isEmpty) not.! !
 
 
+!classDefinition: #Prefix category: 'Stack-Exercise'!
+Object subclass: #Prefix
+	instanceVariableNames: 'string'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Prefix class' category: 'Stack-Exercise'!
+Prefix class
+	instanceVariableNames: ''!
+
+!Prefix class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:32:37'!
+isThatGivenStringIsAValidPrefix: aString
+	| stringSubclass | 
+	stringSubclass := Prefix subclasses detect:[:aSubclass | aSubclass stringIsFromThisSubclass: aString].
+	^stringSubclass isValid.
+	! !
+
+!Prefix class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:39:47'!
+isValid
+
+	self subclassResponsibility.
+	! !
+
+!Prefix class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:36:28'!
+stringIsFromThisSubclass: aString
+	
+	self subclassResponsibility.! !
+
+
+!classDefinition: #InvalidPrefixDueToBlanc category: 'Stack-Exercise'!
+Prefix subclass: #InvalidPrefixDueToBlanc
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'InvalidPrefixDueToBlanc class' category: 'Stack-Exercise'!
+InvalidPrefixDueToBlanc class
+	instanceVariableNames: ''!
+
+!InvalidPrefixDueToBlanc class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:48:06'!
+isValid
+	
+	self error: InvalidPrefixDueToBlanc stringErrorDescription.! !
+
+!InvalidPrefixDueToBlanc class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:39:28'!
+stringIsFromThisSubclass: aString
+	^ aString includesSubString: ' '.! !
+
+!InvalidPrefixDueToBlanc class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:53:38'!
+stringWithBlancErrorDescription
+	
+	^'string has blanc character.'.! !
+
+
+!classDefinition: #InvalidPrefixDueToEmptyString category: 'Stack-Exercise'!
+Prefix subclass: #InvalidPrefixDueToEmptyString
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'InvalidPrefixDueToEmptyString class' category: 'Stack-Exercise'!
+InvalidPrefixDueToEmptyString class
+	instanceVariableNames: ''!
+
+!InvalidPrefixDueToEmptyString class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:52:04'!
+emptyStringErrorDescription
+
+	^'String is Empty.'.! !
+
+!InvalidPrefixDueToEmptyString class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:48:18'!
+isValid
+	self error: InvalidPrefixDueToEmptyString emptyStringErrorDescription.! !
+
+!InvalidPrefixDueToEmptyString class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:37:01'!
+stringIsFromThisSubclass: aString
+	^aString isEmpty.! !
+
+
+!classDefinition: #ValidPrefix category: 'Stack-Exercise'!
+Prefix subclass: #ValidPrefix
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ValidPrefix class' category: 'Stack-Exercise'!
+ValidPrefix class
+	instanceVariableNames: ''!
+
+!ValidPrefix class methodsFor: 'as yet unclassified' stamp: 'AT 5/16/2022 00:01:18'!
+isValid! !
+
+!ValidPrefix class methodsFor: 'as yet unclassified' stamp: 'AT 5/15/2022 23:38:54'!
+stringIsFromThisSubclass: aString
+	^aString isEmpty and: [aString includesSubString: ' '].! !
+
+
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
 	instanceVariableNames: 'alreadyConsideredStrings stringsWithThePrefix patternWithThePrefix'
@@ -353,9 +467,10 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'IACS 5/15/2022 22:23:27'!
+!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'AT 5/15/2022 23:59:15'!
 searchForPhrasesWith: aPrefix in: aStack
 	
+	Prefix isThatGivenStringIsAValidPrefix: aPrefix.
 	self verifyThatTheStackIsNotEmpty: aStack.
 	self setUpSearch.
 	
@@ -371,8 +486,9 @@ searchForPhrasesWith: aPrefix in: aStack
 	
 	^ stringsWithThePrefix.! !
 
-!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'IACS 5/15/2022 22:11:41'!
-sendBackAllElementsFrom: aCollectionOfTheStringsTaken To: aStack! !
+!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'AT 5/15/2022 22:46:17'!
+sendBackAllElementsFrom: aCollectionOfTheStringsTaken To: aStack
+	aCollectionOfTheStringsTaken reverseDo: [:string | aStack push: string].! !
 
 !SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'IACS 5/15/2022 17:52:30'!
 setUpSearch
@@ -382,3 +498,7 @@ setUpSearch
 !SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'IACS 5/15/2022 16:32:13'!
 verifyThatTheStackIsNotEmpty: aStack
 	aStack top.! !
+
+!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'AT 5/15/2022 23:05:31'!
+verifyThatTheStringIsNotEmpty: aStack
+	! !
