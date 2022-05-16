@@ -353,7 +353,7 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'IACS 5/15/2022 22:10:13'!
+!SentenceFinderByPrefix methodsFor: 'stack searching' stamp: 'IACS 5/15/2022 22:23:27'!
 searchForPhrasesWith: aPrefix in: aStack
 	
 	self verifyThatTheStackIsNotEmpty: aStack.
@@ -364,9 +364,9 @@ searchForPhrasesWith: aPrefix in: aStack
 		| currentObject |
 		currentObject := aStack pop.
 		alreadyConsideredStrings add: currentObject	.
-		(currentObject beginsWith: aPrefix) ifTrue: [ stringsWithThePrefix add: currentObject ]
 	].
-
+	
+	stringsWithThePrefix := alreadyConsideredStrings select: [:currentObject | currentObject beginsWith: aPrefix].
 	self sendBackAllElementsFrom: alreadyConsideredStrings To: aStack.
 	
 	^ stringsWithThePrefix.! !
