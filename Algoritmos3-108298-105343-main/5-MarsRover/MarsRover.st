@@ -70,19 +70,10 @@ sendCommand: aCommand
 	((aCommand = 'l') or: (aCommand = 'r'))ifTrue: [processedCommand := MarsRoverRotationCommands createAfterReceving: aCommand].
 	processedCommand sendProtocolTo: self.! !
 
-!MarsRover methodsFor: 'directioning' stamp: 'IACS 5/29/2022 22:13:36'!
-turnLeft
-	(directionPointingTo = 'N')ifTrue:[directionPointingTo := 'O']
-	ifFalse:[(directionPointingTo = 'O')ifTrue:[directionPointingTo := 'S']
-	ifFalse:[(directionPointingTo = 'S')ifTrue:[directionPointingTo := 'E']
-	ifFalse:[(directionPointingTo = 'E')ifTrue:[directionPointingTo := 'N']]]].! !
 
-!MarsRover methodsFor: 'directioning' stamp: 'IACS 5/29/2022 22:15:20'!
-turnRight
-	(directionPointingTo = 'N')ifTrue:[directionPointingTo := 'E']
-	ifFalse:[(directionPointingTo = 'E')ifTrue:[directionPointingTo := 'S']
-	ifFalse:[(directionPointingTo = 'S')ifTrue:[directionPointingTo := 'O']
-	ifFalse:[(directionPointingTo = 'O')ifTrue:[directionPointingTo := 'N']]]].! !
+!MarsRover methodsFor: 'private' stamp: 'IACS 5/29/2022 23:26:08'!
+changeDirectionTo: aDirection
+	directionPointingTo := aDirection.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -107,9 +98,9 @@ initialize
 	self subclassResponsibility .! !
 
 
-!MarsRoverRotationCommands methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:16:31'!
+!MarsRoverRotationCommands methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:18:44'!
 sendProtocolTo: aMarsRover
-	self subclassResponsibility .! !
+	self subclassResponsibility .																									! !
 
 !MarsRoverRotationCommands methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:07:55'!
 thisIsTheCorrectCommandAfterReceiving: aCommand
@@ -121,10 +112,10 @@ thisIsTheCorrectCommandAfterReceiving: aCommand
 MarsRoverRotationCommands class
 	instanceVariableNames: ''!
 
-!MarsRoverRotationCommands class methodsFor: 'as yet unclassified' stamp: 'IACS 5/29/2022 23:10:55'!
+!MarsRoverRotationCommands class methodsFor: 'as yet unclassified' stamp: 'IACS 5/29/2022 23:27:39'!
 createAfterReceving: aSentCommand
 	| receivedCommand |
-	receivedCommand := self subclasses detect: [ :aSubclass | aSubclass thisIsTheCorrectCommandAfterReceiving: aSentCommand].
+	receivedCommand := self subclasses detect: [ :aSubclass | aSubclass new thisIsTheCorrectCommandAfterReceiving: aSentCommand].
 	^receivedCommand new.! !
 
 !MarsRoverRotationCommands class methodsFor: 'as yet unclassified' stamp: 'IACS 5/29/2022 22:59:21'!
@@ -138,6 +129,12 @@ MarsRoverRotationCommands subclass: #MarsRoverTurnLeft
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
+
+!MarsRoverTurnLeft methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:24:54'!
+sendProtocolTo: aMarsRover
+	| directionAfterTurningLeft |
+	directionAfterTurningLeft := responsesToTheCommand at: aMarsRover direction.							
+	aMarsRover changeDirectionTo: directionAfterTurningLeft.! !
 
 !MarsRoverTurnLeft methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:07:41'!
 thisIsTheCorrectCommandAfterReceiving: aCommand
@@ -171,6 +168,12 @@ MarsRoverRotationCommands subclass: #MarsRoverTurnRight
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
+
+!MarsRoverTurnRight methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:25:25'!
+sendProtocolTo: aMarsRover
+	| directionAfterTurningRight |
+	directionAfterTurningRight := responsesToTheCommand at: aMarsRover direction.							
+	aMarsRover changeDirectionTo: directionAfterTurningRight.! !
 
 !MarsRoverTurnRight methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:08:18'!
 thisIsTheCorrectCommandAfterReceiving: aCommand
