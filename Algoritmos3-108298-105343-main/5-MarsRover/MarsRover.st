@@ -37,6 +37,67 @@ test04TheDirectionCanBeChangedInMultipleDirections
 	marsRover sendCommand: 'r'.
 	self assert: marsRover direction = 'E'.! !
 
+!MarsRoverTests methodsFor: 'testing' stamp: 'IACS 5/29/2022 23:55:01'!
+test05MarsRoverCanMoveForward
+	| marsRover |
+	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
+	marsRover sendCommand: 'f'.
+	self assert: marsRover position = (69@70).
+	! !
+
+!MarsRoverTests methodsFor: 'testing' stamp: 'IACS 5/29/2022 23:55:38'!
+test06MarsRoverCanMoveForwardSuccesively
+	| marsRover |
+	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
+	marsRover sendCommand: 'f'.
+	marsRover sendCommand: 'f'.
+	marsRover sendCommand: 'f'.
+	marsRover sendCommand: 'f'.
+	self assert: marsRover position = (69@73).
+	! !
+
+!MarsRoverTests methodsFor: 'testing' stamp: 'IACS 5/29/2022 23:58:30'!
+test07MarsRoverCanMoveForwardAfterRotating
+	| marsRover |
+	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
+	marsRover sendCommand: 'f'.
+	marsRover sendCommand: 'l'.
+	marsRover sendCommand: 'f'.
+	marsRover sendCommand: 'l'.
+	marsRover sendCommand: 'f'.
+	self assert: marsRover position = (68@69).
+	! !
+
+!MarsRoverTests methodsFor: 'testing' stamp: 'IACS 5/29/2022 23:59:20'!
+test08MarsRoverCanMoveBackwards
+	| marsRover |
+	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
+	marsRover sendCommand: 'b'.
+	self assert: marsRover position = (69@68).
+	! !
+
+!MarsRoverTests methodsFor: 'testing' stamp: 'IACS 5/30/2022 00:02:06'!
+test09MarsRoverCanMoveForwardSuccesively
+	| marsRover |
+	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
+	marsRover sendCommand: 'b'.
+	marsRover sendCommand: 'b'.
+	marsRover sendCommand: 'b'.
+	self assert: marsRover position = (69@66).
+	! !
+
+!MarsRoverTests methodsFor: 'testing' stamp: 'IACS 5/30/2022 00:05:50'!
+test10MarsRoverCanMoveBackwardsAfterRotating
+	| marsRover |
+	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
+	marsRover sendCommand: 'b'.
+	marsRover sendCommand: 'l'.
+	marsRover sendCommand: 'b'.
+	marsRover sendCommand: 'l'.
+	marsRover sendCommand: 'b'.
+	self assert: marsRover position = (70@69).
+	! !
+
 
 !classDefinition: #MarsRover category: 'MarsRover'!
 Object subclass: #MarsRover
@@ -64,16 +125,22 @@ position
 direction
 	^directionPointingTo.! !
 
-!MarsRover methodsFor: 'directioning' stamp: 'IACS 5/29/2022 23:15:38'!
+!MarsRover methodsFor: 'directioning' stamp: 'IACS 5/29/2022 23:42:34'!
 sendCommand: aCommand
 	| processedCommand |
-	((aCommand = 'l') or: (aCommand = 'r'))ifTrue: [processedCommand := MarsRoverRotationCommands createAfterReceving: aCommand].
+	processedCommand := MarsRoverCommands createAfterReceving: aCommand.
 	processedCommand sendProtocolTo: self.! !
 
 
 !MarsRover methodsFor: 'private' stamp: 'IACS 5/29/2022 23:26:08'!
 changeDirectionTo: aDirection
 	directionPointingTo := aDirection.! !
+
+!MarsRover methodsFor: 'private' stamp: 'IACS 5/29/2022 23:54:09'!
+changePositionByAdding: anAddend
+	| currentPosition |
+	currentPosition := position.
+	position := currentPosition + anAddend.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -86,45 +153,113 @@ createAtPosition: aPosition PointingTo: aCardinalPoint
 	^self new initializeAtPosition: aPosition PointingTo: aCardinalPoint. ! !
 
 
-!classDefinition: #MarsRoverRotationCommands category: 'MarsRover'!
-Object subclass: #MarsRoverRotationCommands
+!classDefinition: #MarsRoverCommands category: 'MarsRover'!
+Object subclass: #MarsRoverCommands
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverRotationCommands methodsFor: 'initialize' stamp: 'IACS 5/29/2022 23:04:46'!
+!MarsRoverCommands methodsFor: 'instance creation' stamp: 'IACS 5/29/2022 23:04:46'!
 initialize
 	self subclassResponsibility .! !
 
 
-!MarsRoverRotationCommands methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:18:44'!
+!MarsRoverCommands methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:18:44'!
 sendProtocolTo: aMarsRover
 	self subclassResponsibility .																									! !
 
-!MarsRoverRotationCommands methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:07:55'!
+!MarsRoverCommands methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:07:55'!
 thisIsTheCorrectCommandAfterReceiving: aCommand
 	self subclassResponsibility .! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'MarsRoverRotationCommands class' category: 'MarsRover'!
-MarsRoverRotationCommands class
+!classDefinition: 'MarsRoverCommands class' category: 'MarsRover'!
+MarsRoverCommands class
 	instanceVariableNames: ''!
 
-!MarsRoverRotationCommands class methodsFor: 'as yet unclassified' stamp: 'IACS 5/29/2022 23:27:39'!
+!MarsRoverCommands class methodsFor: 'as yet unclassified' stamp: 'IACS 5/29/2022 23:27:39'!
 createAfterReceving: aSentCommand
 	| receivedCommand |
 	receivedCommand := self subclasses detect: [ :aSubclass | aSubclass new thisIsTheCorrectCommandAfterReceiving: aSentCommand].
 	^receivedCommand new.! !
 
-!MarsRoverRotationCommands class methodsFor: 'as yet unclassified' stamp: 'IACS 5/29/2022 22:59:21'!
+!MarsRoverCommands class methodsFor: 'as yet unclassified' stamp: 'IACS 5/29/2022 22:59:21'!
 initialize
 	self subclassResponsibility.! !
 
 
+!classDefinition: #MarsRoverMoveBackwards category: 'MarsRover'!
+MarsRoverCommands subclass: #MarsRoverMoveBackwards
+	instanceVariableNames: 'responsesToTheCommand'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+!MarsRoverMoveBackwards methodsFor: 'instance creation' stamp: 'IACS 5/30/2022 00:04:39'!
+initialize
+	responsesToTheCommand := Dictionary new.
+	responsesToTheCommand at: 'N' put: (0@-1).
+	responsesToTheCommand at: 'O' put: (1@0).
+	responsesToTheCommand at: 'S' put: (0@1).
+	responsesToTheCommand at: 'E' put: (-1@0).
+	
+	! !
+
+
+!MarsRoverMoveBackwards methodsFor: 'command selection' stamp: 'IACS 5/30/2022 00:04:49'!
+sendProtocolTo: aMarsRover
+	| addend |
+	addend := responsesToTheCommand at: aMarsRover direction.							
+	aMarsRover changePositionByAdding: addend.! !
+
+!MarsRoverMoveBackwards methodsFor: 'command selection' stamp: 'IACS 5/30/2022 00:05:03'!
+thisIsTheCorrectCommandAfterReceiving: aCommand
+	^aCommand = 'b'.! !
+
+
+!classDefinition: #MarsRoverMoveForward category: 'MarsRover'!
+MarsRoverCommands subclass: #MarsRoverMoveForward
+	instanceVariableNames: 'responsesToTheCommand'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+!MarsRoverMoveForward methodsFor: 'instance creation' stamp: 'IACS 5/29/2022 23:52:18'!
+initialize
+	responsesToTheCommand := Dictionary new.
+	responsesToTheCommand at: 'N' put: (0@1).
+	responsesToTheCommand at: 'O' put: (-1@0).
+	responsesToTheCommand at: 'S' put: (0@-1).
+	responsesToTheCommand at: 'E' put: (1@0).
+	
+	! !
+
+
+!MarsRoverMoveForward methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:51:12'!
+sendProtocolTo: aMarsRover
+	| addend |
+	addend := responsesToTheCommand at: aMarsRover direction.							
+	aMarsRover changePositionByAdding: addend.! !
+
+!MarsRoverMoveForward methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:44:40'!
+thisIsTheCorrectCommandAfterReceiving: aCommand
+	^aCommand = 'f'.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'MarsRoverMoveForward class' category: 'MarsRover'!
+MarsRoverMoveForward class
+	instanceVariableNames: ''!
+
+!MarsRoverMoveForward class methodsFor: 'as yet unclassified' stamp: 'IACS 5/29/2022 23:44:08'!
+initialize
+	^self new.! !
+
+
 !classDefinition: #MarsRoverTurnLeft category: 'MarsRover'!
-MarsRoverRotationCommands subclass: #MarsRoverTurnLeft
+MarsRoverCommands subclass: #MarsRoverTurnLeft
 	instanceVariableNames: 'responsesToTheCommand'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -163,7 +298,7 @@ initialize
 
 
 !classDefinition: #MarsRoverTurnRight category: 'MarsRover'!
-MarsRoverRotationCommands subclass: #MarsRoverTurnRight
+MarsRoverCommands subclass: #MarsRoverTurnRight
 	instanceVariableNames: 'responsesToTheCommand'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -200,6 +335,7 @@ MarsRoverTurnRight class
 initialize
 	^self new.! !
 
-MarsRoverRotationCommands initialize!
+MarsRoverCommands initialize!
+MarsRoverMoveForward initialize!
 MarsRoverTurnLeft initialize!
 MarsRoverTurnRight initialize!
