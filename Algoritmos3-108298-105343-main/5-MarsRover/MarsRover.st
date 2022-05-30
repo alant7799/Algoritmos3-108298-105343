@@ -1,137 +1,114 @@
 !classDefinition: #MarsRoverTests category: 'MarsRover'!
 TestCase subclass: #MarsRoverTests
-	instanceVariableNames: ''
+	instanceVariableNames: 'marsRoverAtx69y69'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/29/2022 21:53:04'!
+!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 12:29:53'!
 test01AMarsRoverCanBeCreatedAtASpecificPositionPointingToASpecificDirection
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	self assert: marsRover position = (69@69). 
-	self assert: marsRover direction = 'N'.
+	self assert: marsRoverAtx69y69 position = (69@69). 
+	self assert: marsRoverAtx69y69 direction = 'N'.
 	! !
 
-!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 10:23:17'!
+!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 12:30:05'!
 test02TheDirectionTheMarsRoverIsPointingToCanBeCommandedToChange
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	marsRover receiveCommand: 'l'.
-	self assert: marsRover direction = 'O'.! !
+	marsRoverAtx69y69 receiveCommand: 'l'.
+	self assert: marsRoverAtx69y69 direction = 'O'.! !
 
-!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 10:23:21'!
+!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 12:30:17'!
 test03TheDirectionTheMarsRoverIsPointingToCanBeCommandedToChangeSuccesively
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	marsRover receiveCommand: 'l'.
-	marsRover receiveCommand: 'l'.
-	self assert: marsRover direction = 'S'.! !
+	marsRoverAtx69y69 receiveCommand: 'l'.
+	marsRoverAtx69y69 receiveCommand: 'l'.
+	self assert: marsRoverAtx69y69 direction = 'S'.! !
 
-!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 10:23:27'!
+!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 12:30:33'!
 test04TheDirectionCanBeChangedInMultipleDirections
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	marsRover receiveCommand: 'l'.
-	marsRover receiveCommand: 'r'.
-	marsRover receiveCommand: 'r'.
-	self assert: marsRover direction = 'E'.! !
+	marsRoverAtx69y69 receiveCommand: 'l'.
+	marsRoverAtx69y69 receiveCommand: 'r'.
+	marsRoverAtx69y69 receiveCommand: 'r'.
+	self assert: marsRoverAtx69y69 direction = 'E'.! !
 
-!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 10:23:33'!
+!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 12:30:44'!
 test05MarsRoverCanMoveForward
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	marsRover receiveCommand: 'f'.
-	self assert: marsRover position = (69@70).
+	marsRoverAtx69y69 receiveCommand: 'f'.
+	self assert: marsRoverAtx69y69 position = (69@70).
 	! !
 
-!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 10:23:41'!
+!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 12:31:06'!
 test06MarsRoverCanMoveForwardSuccesively
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	marsRover receiveCommand: 'f'.
-	marsRover receiveCommand: 'f'.
-	marsRover receiveCommand: 'f'.
-	marsRover receiveCommand: 'f'.
-	self assert: marsRover position = (69@73).
+	marsRoverAtx69y69 receiveCommand: 'f'.
+	marsRoverAtx69y69 receiveCommand: 'f'.
+	marsRoverAtx69y69 receiveCommand: 'f'.
+	marsRoverAtx69y69 receiveCommand: 'f'.
+	self assert: marsRoverAtx69y69 position = (69@73).
 	! !
 
-!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 10:23:52'!
+!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 12:31:25'!
 test07MarsRoverCanMoveForwardAfterRotating
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	marsRover receiveCommand: 'f'.
-	marsRover receiveCommand: 'l'.
-	marsRover receiveCommand: 'f'.
-	marsRover receiveCommand: 'l'.
-	marsRover receiveCommand: 'f'.
-	self assert: marsRover position = (68@69).
+	marsRoverAtx69y69 receiveCommand: 'f'.
+	marsRoverAtx69y69 receiveCommand: 'l'.
+	marsRoverAtx69y69 receiveCommand: 'f'.
+	marsRoverAtx69y69 receiveCommand: 'l'.
+	marsRoverAtx69y69 receiveCommand: 'f'.
+	self assert: marsRoverAtx69y69 position = (68@69).
 	! !
 
-!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 10:23:55'!
+!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 12:31:36'!
 test08MarsRoverCanMoveBackwards
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	marsRover receiveCommand: 'b'.
-	self assert: marsRover position = (69@68).
+	marsRoverAtx69y69 receiveCommand: 'b'.
+	self assert: marsRoverAtx69y69 position = (69@68).
 	! !
 
-!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 10:24:04'!
+!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 12:31:49'!
 test09MarsRoverCanMoveForwardSuccesively
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	marsRover receiveCommand: 'b'.
-	marsRover receiveCommand: 'b'.
-	marsRover receiveCommand: 'b'.
-	self assert: marsRover position = (69@66).
+	marsRoverAtx69y69 receiveCommand: 'b'.
+	marsRoverAtx69y69 receiveCommand: 'b'.
+	marsRoverAtx69y69 receiveCommand: 'b'.
+	self assert: marsRoverAtx69y69 position = (69@66).
 	! !
 
-!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 10:24:17'!
+!MarsRoverTests methodsFor: 'simple commands' stamp: 'IACS 5/30/2022 12:32:03'!
 test10MarsRoverCanMoveBackwardsAfterRotating
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	marsRover receiveCommand: 'b'.
-	marsRover receiveCommand: 'l'.
-	marsRover receiveCommand: 'b'.
-	marsRover receiveCommand: 'l'.
-	marsRover receiveCommand: 'b'.
-	self assert: marsRover position = (70@69).
+	marsRoverAtx69y69 receiveCommand: 'b'.
+	marsRoverAtx69y69 receiveCommand: 'l'.
+	marsRoverAtx69y69 receiveCommand: 'b'.
+	marsRoverAtx69y69 receiveCommand: 'l'.
+	marsRoverAtx69y69 receiveCommand: 'b'.
+	self assert: marsRoverAtx69y69 position = (70@69).
 	! !
 
 
-!MarsRoverTests methodsFor: 'complex commands' stamp: 'IACS 5/30/2022 11:47:43'!
+!MarsRoverTests methodsFor: 'complex commands' stamp: 'IACS 5/30/2022 12:32:13'!
 test11MarsRoverCanMultipleCommandsOfMovingForwardFromASingleString
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	marsRover receiveCommand: 'fffff'.
-	self assert: marsRover position = (69@74).
+	marsRoverAtx69y69 receiveCommand: 'fffff'.
+	self assert: marsRoverAtx69y69 position = (69@74).
 	! !
 
-!MarsRoverTests methodsFor: 'complex commands' stamp: 'IACS 5/30/2022 10:51:43'!
+!MarsRoverTests methodsFor: 'complex commands' stamp: 'IACS 5/30/2022 12:32:24'!
 test12MarsRoverCanMultipleCommandsOfMovingBackwardsFromASingleString
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	marsRover receiveCommand: 'bbb'.
-	self assert: marsRover position = (69@66).
+	marsRoverAtx69y69 receiveCommand: 'bbb'.
+	self assert: marsRoverAtx69y69 position = (69@66).
 	! !
 
-!MarsRoverTests methodsFor: 'complex commands' stamp: 'IACS 5/30/2022 12:04:11'!
+!MarsRoverTests methodsFor: 'complex commands' stamp: 'IACS 5/30/2022 12:32:35'!
 test13MarsRoverCanUnderstandMultipleCommandsOfRotatingFromASingleString
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	marsRover receiveCommand: 'llllrrrr'.
-	self assert: marsRover position = (69@69).
-	self assert: marsRover direction = 'N'.
+	marsRoverAtx69y69 receiveCommand: 'llllrrrr'.
+	self assert: marsRoverAtx69y69 position = (69@69).
+	self assert: marsRoverAtx69y69 direction = 'N'.
 	! !
 
-!MarsRoverTests methodsFor: 'complex commands' stamp: 'IACS 5/30/2022 10:51:10'!
+!MarsRoverTests methodsFor: 'complex commands' stamp: 'IACS 5/30/2022 12:32:45'!
 test14MarsRoverCanMultipleCommandsOfDifferentTypesFromOneString
-	| marsRover |
-	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
-	marsRover receiveCommand: 'blblf'.
-	self assert: marsRover position = (70@67).
+	marsRoverAtx69y69 receiveCommand: 'blblf'.
+	self assert: marsRoverAtx69y69 position = (70@67).
 	! !
 
+
+
+!MarsRoverTests methodsFor: 'setup' stamp: 'IACS 5/30/2022 12:29:37'!
+setUp
+	marsRoverAtx69y69 := MarsRover createAtPosition: (69@69) PointingTo: 'N'. ! !
 
 
 !classDefinition: #MarsRover category: 'MarsRover'!
@@ -221,17 +198,43 @@ thisIsTheCorrectCommandAfterReceiving: aCommand
 MarsRoverCommands class
 	instanceVariableNames: ''!
 
-!MarsRoverCommands class methodsFor: 'instance creation' stamp: 'IACS 5/30/2022 11:30:34'!
+!MarsRoverCommands class methodsFor: 'instance creation' stamp: 'IACS 5/30/2022 12:16:05'!
 processTheCommand: aReceivedCommand
-	| receivedCommand possibleCommands |
-	possibleCommands := self subclasses collect: [ :aSubclass | aSubclass new ].
-	receivedCommand := possibleCommands detect: [ :aCommand | aCommand thisIsTheCorrectCommandAfterReceiving: aReceivedCommand].
-	^receivedCommand.! !
+	| receivedCommand |
+	receivedCommand := self allSubclasses detect: [ :aSubclass | aSubclass new thisIsTheCorrectCommandAfterReceiving: aReceivedCommand].
+	^receivedCommand new.! !
+
+
+!classDefinition: #MarsRoverMoveCommands category: 'MarsRover'!
+MarsRoverCommands subclass: #MarsRoverMoveCommands
+	instanceVariableNames: 'coordinateTranslationsToDo'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+!MarsRoverMoveCommands methodsFor: 'command selection' stamp: 'IACS 5/30/2022 12:14:42'!
+sendProtocolTo: aMarsRover
+	self subclassResponsibility.! !
+
+!MarsRoverMoveCommands methodsFor: 'command selection' stamp: 'IACS 5/30/2022 12:14:57'!
+thisIsTheCorrectCommandAfterReceiving: aCommand
+	^false.! !
+
+
+!MarsRoverMoveCommands methodsFor: 'instance creation' stamp: 'IACS 5/30/2022 12:24:19'!
+initialize
+	coordinateTranslationsToDo := Dictionary new.
+	coordinateTranslationsToDo at: 'N' put: (0@1).
+	coordinateTranslationsToDo at: 'O' put: (-1@0).
+	coordinateTranslationsToDo at: 'S' put: (0@-1).
+	coordinateTranslationsToDo at: 'E' put: (1@0).
+	
+	! !
 
 
 !classDefinition: #MarsRoverMoveBackwards category: 'MarsRover'!
-MarsRoverCommands subclass: #MarsRoverMoveBackwards
-	instanceVariableNames: 'responsesToTheCommand'
+MarsRoverMoveCommands subclass: #MarsRoverMoveBackwards
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
@@ -239,22 +242,11 @@ MarsRoverCommands subclass: #MarsRoverMoveBackwards
 I represent the Mars Rover command for moving backwards.!
 
 
-!MarsRoverMoveBackwards methodsFor: 'instance creation' stamp: 'IACS 5/30/2022 00:04:39'!
-initialize
-	responsesToTheCommand := Dictionary new.
-	responsesToTheCommand at: 'N' put: (0@-1).
-	responsesToTheCommand at: 'O' put: (1@0).
-	responsesToTheCommand at: 'S' put: (0@1).
-	responsesToTheCommand at: 'E' put: (-1@0).
-	
-	! !
-
-
-!MarsRoverMoveBackwards methodsFor: 'command selection' stamp: 'IACS 5/30/2022 00:04:49'!
+!MarsRoverMoveBackwards methodsFor: 'command selection' stamp: 'IACS 5/30/2022 12:24:19'!
 sendProtocolTo: aMarsRover
 	| addend |
-	addend := responsesToTheCommand at: aMarsRover direction.							
-	aMarsRover changePositionByAdding: addend.! !
+	addend := coordinateTranslationsToDo at: aMarsRover direction.							
+	aMarsRover changePositionByAdding: (addend*(-1)).! !
 
 !MarsRoverMoveBackwards methodsFor: 'command selection' stamp: 'IACS 5/30/2022 00:05:03'!
 thisIsTheCorrectCommandAfterReceiving: aCommand
@@ -262,8 +254,8 @@ thisIsTheCorrectCommandAfterReceiving: aCommand
 
 
 !classDefinition: #MarsRoverMoveForward category: 'MarsRover'!
-MarsRoverCommands subclass: #MarsRoverMoveForward
-	instanceVariableNames: 'responsesToTheCommand'
+MarsRoverMoveCommands subclass: #MarsRoverMoveForward
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
@@ -271,21 +263,10 @@ MarsRoverCommands subclass: #MarsRoverMoveForward
 I represent the Mars Rover command for moving forward!
 
 
-!MarsRoverMoveForward methodsFor: 'instance creation' stamp: 'IACS 5/29/2022 23:52:18'!
-initialize
-	responsesToTheCommand := Dictionary new.
-	responsesToTheCommand at: 'N' put: (0@1).
-	responsesToTheCommand at: 'O' put: (-1@0).
-	responsesToTheCommand at: 'S' put: (0@-1).
-	responsesToTheCommand at: 'E' put: (1@0).
-	
-	! !
-
-
-!MarsRoverMoveForward methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:51:12'!
+!MarsRoverMoveForward methodsFor: 'command selection' stamp: 'IACS 5/30/2022 12:24:19'!
 sendProtocolTo: aMarsRover
 	| addend |
-	addend := responsesToTheCommand at: aMarsRover direction.							
+	addend := coordinateTranslationsToDo at: aMarsRover direction.							
 	aMarsRover changePositionByAdding: addend.! !
 
 !MarsRoverMoveForward methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:44:40'!
@@ -295,7 +276,7 @@ thisIsTheCorrectCommandAfterReceiving: aCommand
 
 !classDefinition: #MarsRoverTurnLeft category: 'MarsRover'!
 MarsRoverCommands subclass: #MarsRoverTurnLeft
-	instanceVariableNames: 'responsesToTheCommand'
+	instanceVariableNames: 'directionsAfterTurningLeft'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
@@ -303,10 +284,10 @@ MarsRoverCommands subclass: #MarsRoverTurnLeft
 I represent the Mars Rover command for turning left by 90 degrees!
 
 
-!MarsRoverTurnLeft methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:24:54'!
+!MarsRoverTurnLeft methodsFor: 'command selection' stamp: 'IACS 5/30/2022 12:26:21'!
 sendProtocolTo: aMarsRover
 	| directionAfterTurningLeft |
-	directionAfterTurningLeft := responsesToTheCommand at: aMarsRover direction.							
+	directionAfterTurningLeft := directionsAfterTurningLeft at: aMarsRover direction.							
 	aMarsRover changeDirectionTo: directionAfterTurningLeft.! !
 
 !MarsRoverTurnLeft methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:07:41'!
@@ -314,20 +295,20 @@ thisIsTheCorrectCommandAfterReceiving: aCommand
 	^aCommand = 'l'.! !
 
 
-!MarsRoverTurnLeft methodsFor: 'instance creation' stamp: 'IACS 5/29/2022 23:02:57'!
+!MarsRoverTurnLeft methodsFor: 'instance creation' stamp: 'IACS 5/30/2022 12:26:21'!
 initialize
-	responsesToTheCommand := Dictionary new.
-	responsesToTheCommand at: 'N' put: 'O'.
-	responsesToTheCommand at: 'O' put: 'S'.
-	responsesToTheCommand at: 'S' put: 'E'.
-	responsesToTheCommand at: 'E' put: 'N'.
+	directionsAfterTurningLeft := Dictionary new.
+	directionsAfterTurningLeft at: 'N' put: 'O'.
+	directionsAfterTurningLeft at: 'O' put: 'S'.
+	directionsAfterTurningLeft at: 'S' put: 'E'.
+	directionsAfterTurningLeft at: 'E' put: 'N'.
 	
 	! !
 
 
 !classDefinition: #MarsRoverTurnRight category: 'MarsRover'!
 MarsRoverCommands subclass: #MarsRoverTurnRight
-	instanceVariableNames: 'responsesToTheCommand'
+	instanceVariableNames: 'directionsAfterTurningRight'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
@@ -335,10 +316,10 @@ MarsRoverCommands subclass: #MarsRoverTurnRight
 I represent the Mars Rover command for turning right by 90 degrees!
 
 
-!MarsRoverTurnRight methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:25:25'!
+!MarsRoverTurnRight methodsFor: 'command selection' stamp: 'IACS 5/30/2022 12:26:36'!
 sendProtocolTo: aMarsRover
 	| directionAfterTurningRight |
-	directionAfterTurningRight := responsesToTheCommand at: aMarsRover direction.							
+	directionAfterTurningRight := directionsAfterTurningRight at: aMarsRover direction.							
 	aMarsRover changeDirectionTo: directionAfterTurningRight.! !
 
 !MarsRoverTurnRight methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:08:18'!
@@ -346,12 +327,12 @@ thisIsTheCorrectCommandAfterReceiving: aCommand
 	^aCommand = 'r'.! !
 
 
-!MarsRoverTurnRight methodsFor: 'instance creation' stamp: 'IACS 5/29/2022 23:03:37'!
+!MarsRoverTurnRight methodsFor: 'instance creation' stamp: 'IACS 5/30/2022 12:26:36'!
 initialize
-	responsesToTheCommand := Dictionary new.
-	responsesToTheCommand at: 'N' put: 'E'.
-	responsesToTheCommand at: 'E' put: 'S'.
-	responsesToTheCommand at: 'S' put: 'O'.
-	responsesToTheCommand at: 'O' put: 'N'.
+	directionsAfterTurningRight := Dictionary new.
+	directionsAfterTurningRight at: 'N' put: 'E'.
+	directionsAfterTurningRight at: 'E' put: 'S'.
+	directionsAfterTurningRight at: 'S' put: 'O'.
+	directionsAfterTurningRight at: 'O' put: 'N'.
 	
 	! !
