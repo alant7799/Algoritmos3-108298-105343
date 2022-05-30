@@ -98,6 +98,22 @@ test10MarsRoverCanMoveBackwardsAfterRotating
 	self assert: marsRover position = (70@69).
 	! !
 
+!MarsRoverTests methodsFor: 'testing' stamp: 'AT 5/30/2022 11:09:51'!
+test11MarsRoverCanRecibeAStringOfCommandsForMovinAhead
+	| marsRover |
+	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
+	marsRover sendCommand: 'ffff'.
+	self assert: marsRover position = (69@73).
+	! !
+
+!MarsRoverTests methodsFor: 'testing' stamp: 'AT 5/30/2022 11:29:45'!
+test12MarsRoverCanRecibeAStringOfRotationAndMoveCommands
+	| marsRover |
+	marsRover := MarsRover createAtPosition: (69@69) PointingTo: 'N'.
+	marsRover sendCommand: 'frflb'.
+	self assert: marsRover position = (70@69).
+	! !
+
 
 !classDefinition: #MarsRover category: 'MarsRover'!
 Object subclass: #MarsRover
@@ -125,11 +141,9 @@ position
 direction
 	^directionPointingTo.! !
 
-!MarsRover methodsFor: 'directioning' stamp: 'IACS 5/29/2022 23:42:34'!
-sendCommand: aCommand
-	| processedCommand |
-	processedCommand := MarsRoverCommands createAfterReceving: aCommand.
-	processedCommand sendProtocolTo: self.! !
+!MarsRover methodsFor: 'directioning' stamp: 'AT 5/30/2022 11:27:23'!
+sendCommand: commands
+	commands do: [:aCommand | (MarsRoverCommands createAfterReceving: (aCommand asString))  sendProtocolTo: self].! !
 
 
 !MarsRover methodsFor: 'private' stamp: 'IACS 5/29/2022 23:26:08'!
