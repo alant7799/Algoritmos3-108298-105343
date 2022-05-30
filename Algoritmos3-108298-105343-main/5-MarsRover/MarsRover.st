@@ -105,7 +105,6 @@ test14MarsRoverCanMultipleCommandsOfDifferentTypesFromOneString
 	! !
 
 
-
 !MarsRoverTests methodsFor: 'setup' stamp: 'IACS 5/30/2022 12:29:37'!
 setUp
 	marsRoverAtx69y69 := MarsRover createAtPosition: (69@69) PointingTo: 'N'. ! !
@@ -212,22 +211,19 @@ MarsRoverCommands subclass: #MarsRoverMoveCommands
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverMoveCommands methodsFor: 'command selection' stamp: 'IACS 5/30/2022 12:14:42'!
+!MarsRoverMoveCommands methodsFor: 'command selection' stamp: 'AT 5/30/2022 12:59:13'!
 sendProtocolTo: aMarsRover
-	self subclassResponsibility.! !
+	| addend |
+	addend := coordinateTranslationsToDo at: aMarsRover direction.							
+	aMarsRover changePositionByAdding: addend.! !
 
 !MarsRoverMoveCommands methodsFor: 'command selection' stamp: 'IACS 5/30/2022 12:14:57'!
 thisIsTheCorrectCommandAfterReceiving: aCommand
 	^false.! !
 
 
-!MarsRoverMoveCommands methodsFor: 'instance creation' stamp: 'IACS 5/30/2022 12:24:19'!
+!MarsRoverMoveCommands methodsFor: 'instance creation' stamp: 'AT 5/30/2022 12:59:02'!
 initialize
-	coordinateTranslationsToDo := Dictionary new.
-	coordinateTranslationsToDo at: 'N' put: (0@1).
-	coordinateTranslationsToDo at: 'O' put: (-1@0).
-	coordinateTranslationsToDo at: 'S' put: (0@-1).
-	coordinateTranslationsToDo at: 'E' put: (1@0).
 	
 	! !
 
@@ -242,11 +238,14 @@ MarsRoverMoveCommands subclass: #MarsRoverMoveBackwards
 I represent the Mars Rover command for moving backwards.!
 
 
-!MarsRoverMoveBackwards methodsFor: 'command selection' stamp: 'IACS 5/30/2022 12:24:19'!
-sendProtocolTo: aMarsRover
-	| addend |
-	addend := coordinateTranslationsToDo at: aMarsRover direction.							
-	aMarsRover changePositionByAdding: (addend*(-1)).! !
+!MarsRoverMoveBackwards methodsFor: 'command selection' stamp: 'AT 5/30/2022 12:58:21'!
+initialize
+	coordinateTranslationsToDo := Dictionary new.
+	coordinateTranslationsToDo at: 'N' put: (0@-1).
+	coordinateTranslationsToDo at: 'O' put: (1@0).
+	coordinateTranslationsToDo at: 'S' put: (0@1).
+	coordinateTranslationsToDo at: 'E' put: (-1@0).
+	! !
 
 !MarsRoverMoveBackwards methodsFor: 'command selection' stamp: 'IACS 5/30/2022 00:05:03'!
 thisIsTheCorrectCommandAfterReceiving: aCommand
@@ -263,20 +262,44 @@ MarsRoverMoveCommands subclass: #MarsRoverMoveForward
 I represent the Mars Rover command for moving forward!
 
 
-!MarsRoverMoveForward methodsFor: 'command selection' stamp: 'IACS 5/30/2022 12:24:19'!
-sendProtocolTo: aMarsRover
-	| addend |
-	addend := coordinateTranslationsToDo at: aMarsRover direction.							
-	aMarsRover changePositionByAdding: addend.! !
+!MarsRoverMoveForward methodsFor: 'command selection' stamp: 'AT 5/30/2022 12:58:02'!
+initialize
+	coordinateTranslationsToDo := Dictionary new.
+	coordinateTranslationsToDo at: 'N' put: (0@1).
+	coordinateTranslationsToDo at: 'O' put: (-1@0).
+	coordinateTranslationsToDo at: 'S' put: (0@-1).
+	coordinateTranslationsToDo at: 'E' put: (1@0).
+	! !
 
 !MarsRoverMoveForward methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:44:40'!
 thisIsTheCorrectCommandAfterReceiving: aCommand
 	^aCommand = 'f'.! !
 
 
+!classDefinition: #MarsRoverRotationCommands category: 'MarsRover'!
+MarsRoverCommands subclass: #MarsRoverRotationCommands
+	instanceVariableNames: 'directionsAfterTurning'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+!MarsRoverRotationCommands methodsFor: 'as yet unclassified' stamp: 'AT 5/30/2022 13:03:04'!
+initialize! !
+
+!MarsRoverRotationCommands methodsFor: 'as yet unclassified' stamp: 'AT 5/30/2022 13:01:18'!
+sendProtocolTo: aMarsRover
+	| directionAfterTurning |
+	directionAfterTurning := directionsAfterTurning at: aMarsRover direction.							
+	aMarsRover changeDirectionTo: directionAfterTurning.! !
+
+!MarsRoverRotationCommands methodsFor: 'as yet unclassified' stamp: 'AT 5/30/2022 13:03:25'!
+thisIsTheCorrectCommandAfterReceiving: aCommand
+	^false.! !
+
+
 !classDefinition: #MarsRoverTurnLeft category: 'MarsRover'!
-MarsRoverCommands subclass: #MarsRoverTurnLeft
-	instanceVariableNames: 'directionsAfterTurningLeft'
+MarsRoverRotationCommands subclass: #MarsRoverTurnLeft
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
@@ -284,31 +307,25 @@ MarsRoverCommands subclass: #MarsRoverTurnLeft
 I represent the Mars Rover command for turning left by 90 degrees!
 
 
-!MarsRoverTurnLeft methodsFor: 'command selection' stamp: 'IACS 5/30/2022 12:26:21'!
-sendProtocolTo: aMarsRover
-	| directionAfterTurningLeft |
-	directionAfterTurningLeft := directionsAfterTurningLeft at: aMarsRover direction.							
-	aMarsRover changeDirectionTo: directionAfterTurningLeft.! !
-
 !MarsRoverTurnLeft methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:07:41'!
 thisIsTheCorrectCommandAfterReceiving: aCommand
 	^aCommand = 'l'.! !
 
 
-!MarsRoverTurnLeft methodsFor: 'instance creation' stamp: 'IACS 5/30/2022 12:26:21'!
+!MarsRoverTurnLeft methodsFor: 'instance creation' stamp: 'AT 5/30/2022 13:02:58'!
 initialize
-	directionsAfterTurningLeft := Dictionary new.
-	directionsAfterTurningLeft at: 'N' put: 'O'.
-	directionsAfterTurningLeft at: 'O' put: 'S'.
-	directionsAfterTurningLeft at: 'S' put: 'E'.
-	directionsAfterTurningLeft at: 'E' put: 'N'.
+	directionsAfterTurning := Dictionary new.
+	directionsAfterTurning at: 'N' put: 'O'.
+	directionsAfterTurning at: 'O' put: 'S'.
+	directionsAfterTurning at: 'S' put: 'E'.
+	directionsAfterTurning at: 'E' put: 'N'.
 	
 	! !
 
 
 !classDefinition: #MarsRoverTurnRight category: 'MarsRover'!
-MarsRoverCommands subclass: #MarsRoverTurnRight
-	instanceVariableNames: 'directionsAfterTurningRight'
+MarsRoverRotationCommands subclass: #MarsRoverTurnRight
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
@@ -316,23 +333,17 @@ MarsRoverCommands subclass: #MarsRoverTurnRight
 I represent the Mars Rover command for turning right by 90 degrees!
 
 
-!MarsRoverTurnRight methodsFor: 'command selection' stamp: 'IACS 5/30/2022 12:26:36'!
-sendProtocolTo: aMarsRover
-	| directionAfterTurningRight |
-	directionAfterTurningRight := directionsAfterTurningRight at: aMarsRover direction.							
-	aMarsRover changeDirectionTo: directionAfterTurningRight.! !
-
 !MarsRoverTurnRight methodsFor: 'command selection' stamp: 'IACS 5/29/2022 23:08:18'!
 thisIsTheCorrectCommandAfterReceiving: aCommand
 	^aCommand = 'r'.! !
 
 
-!MarsRoverTurnRight methodsFor: 'instance creation' stamp: 'IACS 5/30/2022 12:26:36'!
+!MarsRoverTurnRight methodsFor: 'instance creation' stamp: 'AT 5/30/2022 13:02:38'!
 initialize
-	directionsAfterTurningRight := Dictionary new.
-	directionsAfterTurningRight at: 'N' put: 'E'.
-	directionsAfterTurningRight at: 'E' put: 'S'.
-	directionsAfterTurningRight at: 'S' put: 'O'.
-	directionsAfterTurningRight at: 'O' put: 'N'.
+	directionsAfterTurning := Dictionary new.
+	directionsAfterTurning at: 'N' put: 'E'.
+	directionsAfterTurning at: 'E' put: 'S'.
+	directionsAfterTurning at: 'S' put: 'O'.
+	directionsAfterTurning at: 'O' put: 'N'.
 	
 	! !
