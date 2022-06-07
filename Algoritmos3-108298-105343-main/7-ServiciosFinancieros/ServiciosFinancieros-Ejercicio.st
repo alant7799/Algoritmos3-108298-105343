@@ -5,7 +5,7 @@ TestCase subclass: #ReceptiveAccountTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:10:43'!
+!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:10:43'!
 test01ReceptiveAccountHaveZeroAsBalanceWhenCreated 
 
 	| account |
@@ -15,7 +15,7 @@ test01ReceptiveAccountHaveZeroAsBalanceWhenCreated
 	self assert: 0 equals: account balance
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:14:20'!
+!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:14:20'!
 test02DepositIncreasesBalanceOnTransactionValue 
 
 	| account |
@@ -26,7 +26,7 @@ test02DepositIncreasesBalanceOnTransactionValue
 	self assert: 100 * peso equals: account balance
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:14:24'!
+!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:14:24'!
 test03WithdrawDecreasesBalanceOnTransactionValue 
 
 	| account |
@@ -38,7 +38,7 @@ test03WithdrawDecreasesBalanceOnTransactionValue
 	self assert: 50 * peso equals: account balance
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:10:14'!
+!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:10:14'!
 test04WithdrawValueMustBePositive 
 
 	| account withdrawValue |
@@ -49,7 +49,7 @@ test04WithdrawValueMustBePositive
 	self assert: withdrawValue equals: (Withdraw register: withdrawValue on: account) value
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:10:22'!
+!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:10:22'!
 test05ReceptiveAccountKnowsRegisteredTransactions 
 
 	| account deposit withdraw |
@@ -62,7 +62,7 @@ test05ReceptiveAccountKnowsRegisteredTransactions
 	self assert: (account hasRegistered: withdraw).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:12:14'!
+!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:12:14'!
 test06ReceptiveAccountDoNotKnowNotRegisteredTransactions
 
 	| account deposit withdraw |
@@ -75,7 +75,7 @@ test06ReceptiveAccountDoNotKnowNotRegisteredTransactions
 	self deny: (account hasRegistered: withdraw).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:12:23'!
+!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:12:23'!
 test07AccountKnowsItsTransactions 
 
 	| account deposit |
@@ -87,6 +87,30 @@ test07AccountKnowsItsTransactions
 	self assert: 1 equals: account transactions size.
 	self assert: (account transactions includes: deposit).
 ! !
+
+
+!ReceptiveAccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 10:40:47'!
+test08ATransferenceBetweenTwoAccountsChangesTheBalancesAccordingly
+	| transference debitor creditor |
+	debitor := ReceptiveAccount new.
+	creditor := ReceptiveAccount new.
+	transference := Transference createTransferOf: 50*peso from: debitor to: creditor.
+	transference execute.
+	self assert: -50*peso equals: debitor balance.
+	self assert: 50*peso equals: creditor balance.
+	! !
+
+!ReceptiveAccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 10:55:03'!
+test09ATransferenceCantBeCreatedWithANegativeAmount
+	| debitor creditor |
+	debitor := ReceptiveAccount new.
+	creditor := ReceptiveAccount new.
+	self should: [Transference createTransferOf: -50*peso from: debitor to: creditor.]
+	raise: Error
+	withExceptionDo:
+	[ :anError | self assert: anError messageText = Transference invalidAmountErrorDescription].
+	
+	! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -131,6 +155,11 @@ initializeFor: aValue
 	value := aValue ! !
 
 
+!Deposit methodsFor: 'value' stamp: 'IACS 6/7/2022 10:09:29'!
+effectOnBalance
+
+	^ value! !
+
 !Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
 value
 
@@ -160,6 +189,10 @@ initializeFor: aValue
 
 	value := aValue ! !
 
+
+!Withdraw methodsFor: 'value' stamp: 'IACS 6/7/2022 10:09:49'!
+effectOnBalance
+	^ value negated.! !
 
 !Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:33'!
 value
@@ -191,10 +224,10 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HAW 5/23/2019 15:19:32'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'IACS 6/7/2022 10:10:14'!
 balance
 
-	^transactions sum: [ :aTransaction | aTransaction value ] ifEmpty: [ 0 ]! !
+	^transactions sum: [ :aTransaction | aTransaction effectOnBalance ] ifEmpty: [ 0 ]! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
 hasRegistered: aTransaction
@@ -212,3 +245,39 @@ register: aTransaction
 transactions 
 
 	^ transactions copy! !
+
+
+!classDefinition: #Transference category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Transference
+	instanceVariableNames: 'amount debitor creditor'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Transference methodsFor: 'instance creation' stamp: 'IACS 6/7/2022 10:52:01'!
+initializeCreateTransferOf: anAmount from: aDebitor to: aCreditor
+	(anAmount positive not)ifTrue: [self error: Transference invalidAmountErrorDescription].
+	amount := anAmount.
+	debitor := aDebitor.
+	creditor := aCreditor.! !
+
+
+!Transference methodsFor: 'execution' stamp: 'IACS 6/7/2022 10:39:50'!
+execute
+	Withdraw register: amount on: debitor.
+	Deposit register: amount on: creditor.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Transference class' category: 'ServiciosFinancieros-Ejercicio'!
+Transference class
+	instanceVariableNames: ''!
+
+!Transference class methodsFor: 'instance creation' stamp: 'IACS 6/7/2022 10:37:30'!
+createTransferOf: anAmount from: aDebitor to: aCreditor 
+	^self new initializeCreateTransferOf: anAmount from: aDebitor to: aCreditor. ! !
+
+
+!Transference class methodsFor: 'exception handling' stamp: 'IACS 6/7/2022 10:53:48'!
+invalidAmountErrorDescription
+	^ 'The amount of the transference must be positive'.! !
