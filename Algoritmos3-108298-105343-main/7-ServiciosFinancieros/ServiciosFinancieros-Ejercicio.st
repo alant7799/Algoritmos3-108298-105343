@@ -211,10 +211,6 @@ value
 = anotherTransaction
 	^self effectOnBalance = anotherTransaction effectOnBalance.! !
 
-!Deposit methodsFor: 'associating' stamp: 'IACS 6/7/2022 12:29:12'!
-counterpart
-	^Withdraw for: value.! !
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Deposit class' category: 'ServiciosFinancieros-Ejercicio'!
@@ -225,6 +221,18 @@ Deposit class
 for: aValue
 
 	^ self new initializeFor: aValue ! !
+
+
+!classDefinition: #DepositForTransference category: 'ServiciosFinancieros-Ejercicio'!
+Deposit subclass: #DepositForTransference
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!DepositForTransference methodsFor: 'associating' stamp: 'IACS 6/8/2022 09:50:46'!
+counterpart
+	^Withdraw for: value.! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
@@ -254,10 +262,6 @@ value
 = anotherTransaction
 	^self effectOnBalance = anotherTransaction effectOnBalance.! !
 
-!Withdraw methodsFor: 'associating' stamp: 'IACS 6/7/2022 12:40:23'!
-counterpart
-	^Deposit for: value.! !
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Withdraw class' category: 'ServiciosFinancieros-Ejercicio'!
@@ -268,6 +272,18 @@ Withdraw class
 for: aValue
 
 	^ self new initializeFor: aValue ! !
+
+
+!classDefinition: #WithdrawForTransference category: 'ServiciosFinancieros-Ejercicio'!
+Withdraw subclass: #WithdrawForTransference
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!WithdrawForTransference methodsFor: 'associating' stamp: 'IACS 6/8/2022 09:51:06'!
+counterpart
+	^Deposit for: value.! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -327,17 +343,17 @@ execute
 	Deposit register: amount on: creditor.! !
 
 
-!Transference methodsFor: 'accessing' stamp: 'IACS 6/7/2022 12:09:07'!
+!Transference methodsFor: 'accessing' stamp: 'IACS 6/8/2022 09:51:42'!
 deposit
-	^Deposit for: amount.! !
+	^DepositForTransference for: amount.! !
 
 !Transference methodsFor: 'accessing' stamp: 'IACS 6/7/2022 11:09:38'!
 value
 	^amount.! !
 
-!Transference methodsFor: 'accessing' stamp: 'IACS 6/7/2022 12:10:07'!
+!Transference methodsFor: 'accessing' stamp: 'IACS 6/8/2022 09:51:51'!
 withdraw
-	^Withdraw for: amount.! !
+	^WithdrawForTransference for: amount.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
