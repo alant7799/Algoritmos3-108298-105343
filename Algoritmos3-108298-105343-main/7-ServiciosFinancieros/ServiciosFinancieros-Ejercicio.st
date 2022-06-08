@@ -1,6 +1,6 @@
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #ReceptiveAccountTest
-	instanceVariableNames: 'debitorAccount creditorAccount transferenceFor69'
+	instanceVariableNames: 'debitorAccount creditorAccount transferenceFor69 accountWithTenThousandPesos accountWithNegativeFiveThousandPesos'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
@@ -138,11 +138,39 @@ test14TheWithdrawOfATransactionCanBeAskedForItsCounterpart
 	self assert: depositToCompareWith = transferenceFor69 withdraw counterpart.! !
 
 
-!ReceptiveAccountTest methodsFor: 'setUp/tearDown' stamp: 'IACS 6/7/2022 12:14:43'!
+!ReceptiveAccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 19:35:54'!
+test15APortfolioIsCreatedWithBalanceZero
+	self assert: 0 equals: Portfolio new balance. ! !
+
+!ReceptiveAccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 19:52:57'!
+test16WhenWeAddAnAccountToAPortfolioItYieldsTheBalanceOfThatAccount
+	| aPortfolio |
+	aPortfolio := Portfolio new.
+	aPortfolio add: accountWithTenThousandPesos .
+	self assert: 10000*peso equals: aPortfolio balance.
+	! !
+
+!ReceptiveAccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 19:53:47'!
+test17TheBalanceOfAPortfolioWithTwoAccountsIsTheSumOfTheBalancesOfTheAccounts
+	| aPortfolio |
+	aPortfolio := Portfolio new.
+	aPortfolio add: accountWithTenThousandPesos.
+	aPortfolio add: accountWithNegativeFiveThousandPesos .
+	self assert: 5000*peso equals: aPortfolio balance.
+	! !
+
+
+!ReceptiveAccountTest methodsFor: 'setUp/tearDown' stamp: 'IACS 6/8/2022 19:52:07'!
 setUp
 	debitorAccount := ReceptiveAccount new.
 	creditorAccount := ReceptiveAccount new.
-	transferenceFor69 := Transference createTransferOf: 69*peso from: debitorAccount to: creditorAccount ! !
+	transferenceFor69 := Transference createTransferOf: 69*peso from: debitorAccount to: creditorAccount.
+	
+	accountWithTenThousandPesos := ReceptiveAccount new.
+	Deposit register: 10000*peso on: accountWithTenThousandPesos.
+	
+	accountWithNegativeFiveThousandPesos := ReceptiveAccount new.
+	Withdraw register: 5000*peso on: accountWithNegativeFiveThousandPesos. ! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -284,6 +312,28 @@ Withdraw subclass: #WithdrawForTransference
 !WithdrawForTransference methodsFor: 'associating' stamp: 'IACS 6/8/2022 09:51:06'!
 counterpart
 	^Deposit for: value.! !
+
+
+!classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Portfolio
+	instanceVariableNames: 'accounts'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Portfolio methodsFor: 'accessing' stamp: 'IACS 6/8/2022 19:45:33'!
+balance
+	^accounts sum: [ :anAccount | anAccount balance] ifEmpty: [0].! !
+
+
+!Portfolio methodsFor: 'adding' stamp: 'IACS 6/8/2022 19:43:10'!
+add: aReceptiveAccount 
+	accounts add: aReceptiveAccount.! !
+
+
+!Portfolio methodsFor: 'initialization' stamp: 'IACS 6/8/2022 19:44:20'!
+initialize
+	accounts := OrderedCollection new.! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
