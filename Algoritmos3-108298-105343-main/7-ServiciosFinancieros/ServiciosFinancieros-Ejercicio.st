@@ -217,8 +217,8 @@ test23APortfolioCanBeAskedForTheTransactionOfItsAccounts
 
 	! !
 
-!AccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/9/2022 00:04:00'!
-test24APortfolioCannotBeAskedForTheTransactionOfItsAccounts
+!AccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/9/2022 00:11:59'!
+test24APortfolioCannotBeAskedForTheTransactionOfAnAccountItDoesntContain
 	| aNewAccount |
 	aNewAccount := Account new.
 	self should: [accountWithTenThousandPesos obtainTransactionsFrom: aNewAccount]
