@@ -1,6 +1,6 @@
 !classDefinition: #AccountTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #AccountTest
-	instanceVariableNames: 'debitorAccount creditorAccount transferenceFor69 accountWithTenThousandPesos accountWithNegativeFiveThousandPesos'
+	instanceVariableNames: 'debitorAccount creditorAccount transferenceFor69 accountWithTenThousandPesos accountWithNegativeFiveThousandPesos aPortfolioWithBalanceOfFiveThousandPesos aPortfolioWithBalanceOfNegativeFiveThousandPesos'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
@@ -163,8 +163,72 @@ test17TheBalanceOfAPortfolioWithTwoAccountsIsTheSumOfTheBalancesOfTheAccounts
 	self assert: 5000*peso equals: aPortfolio balance.
 	! !
 
+!AccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 23:24:20'!
+test18TheBalanceOfAPortfolioWithOnlyAnotherPortfolioIsTheBalanceOfThatPortfolio
+	| aPortfolio |
+	aPortfolio := Portfolio new.
+	aPortfolio add: aPortfolioWithBalanceOfFiveThousandPesos. 
+	self assert: 5000*peso equals: aPortfolio balance.
+	! !
 
-!AccountTest methodsFor: 'setUp/tearDown' stamp: 'IACS 6/8/2022 22:36:03'!
+!AccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 23:26:32'!
+test19TheBalanceOfAPortfolioWithTwoPortfoliosIsTheSumOfTheBalances
+	| aPortfolio |
+	aPortfolio := Portfolio new.
+	aPortfolio add: aPortfolioWithBalanceOfFiveThousandPesos. 
+	aPortfolio add: aPortfolioWithBalanceOfNegativeFiveThousandPesos.
+	self assert: 0 equals: aPortfolio balance.
+	! !
+
+!AccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 23:27:52'!
+test20TheBalanceOfAPortfolioWithOneAccountAndOnePortfolioIsTheSumOfTheirBalances
+	| aPortfolio |
+	aPortfolio := Portfolio new.
+	aPortfolio add: aPortfolioWithBalanceOfFiveThousandPesos. 
+	aPortfolio add: accountWithTenThousandPesos.
+	self assert: 15000*peso equals: aPortfolio balance.
+	! !
+
+!AccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 23:35:25'!
+test21APortfolioCanBeAskedWhetherItHasRegisteredATransaction
+	| aDeposit aPortfolio |
+	aPortfolio := Portfolio new.
+	aPortfolio add: accountWithTenThousandPesos .
+	aDeposit := Deposit for: 5000*peso.
+	accountWithTenThousandPesos register: aDeposit.
+	self assert: (aPortfolio hasRegistered: aDeposit).
+	! !
+
+!AccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 23:38:14'!
+test22APortfolioCanBeAskedWhetherItHasRegisteredATransactionInsideAnotherPortfolio
+	| aDeposit aPortfolio mainPortfolio|
+	aPortfolio := Portfolio new.
+	mainPortfolio := Portfolio new.
+	mainPortfolio add: aPortfolio.
+	aPortfolio add: accountWithTenThousandPesos .
+	aDeposit := Deposit for: 5000*peso.
+	accountWithTenThousandPesos register: aDeposit.
+	self assert: (mainPortfolio hasRegistered: aDeposit).
+	! !
+
+!AccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 23:59:54'!
+test23APortfolioCanBeAskedForTheTransactionOfItsAccounts
+	self assert: (aPortfolioWithBalanceOfFiveThousandPesos obtainTransactionsFrom: accountWithTenThousandPesos) = accountWithTenThousandPesos transactions.
+
+	! !
+
+!AccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/9/2022 00:04:00'!
+test24APortfolioCannotBeAskedForTheTransactionOfItsAccounts
+	| aNewAccount |
+	aNewAccount := Account new.
+	self should: [accountWithTenThousandPesos obtainTransactionsFrom: aNewAccount]
+	raise: Error
+	withExceptionDo: [ :anError | anError messageText = Portfolio accountIsNotInPortfolioErrorDescription] 
+
+	! !
+
+
+!AccountTest methodsFor: 'setUp/tearDown' stamp: 'IACS 6/8/2022 23:25:39'!
 setUp
 	debitorAccount := Account new.
 	creditorAccount := Account new.
@@ -174,7 +238,14 @@ setUp
 	Deposit register: 10000*peso on: accountWithTenThousandPesos.
 	
 	accountWithNegativeFiveThousandPesos := Account new.
-	Withdraw register: 5000*peso on: accountWithNegativeFiveThousandPesos. ! !
+	Withdraw register: 5000*peso on: accountWithNegativeFiveThousandPesos. 
+	
+	aPortfolioWithBalanceOfFiveThousandPesos := Portfolio new.
+	aPortfolioWithBalanceOfFiveThousandPesos add: accountWithTenThousandPesos.
+	aPortfolioWithBalanceOfFiveThousandPesos add: accountWithNegativeFiveThousandPesos.
+	
+	aPortfolioWithBalanceOfNegativeFiveThousandPesos := Portfolio new.
+	aPortfolioWithBalanceOfNegativeFiveThousandPesos add: accountWithNegativeFiveThousandPesos.! !
 
 
 !classDefinition: #Account category: 'ServiciosFinancieros-Ejercicio'!
@@ -200,6 +271,10 @@ hasRegistered: aTransaction
 
 	^ transactions includes: aTransaction 
 ! !
+
+!Account methodsFor: 'main protocol' stamp: 'IACS 6/8/2022 23:56:55'!
+isOrContains: anotherAccount
+	^self == anotherAccount.! !
 
 !Account methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 register: aTransaction
@@ -395,19 +470,46 @@ Object subclass: #Portfolio
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Portfolio methodsFor: 'accessing' stamp: 'IACS 6/8/2022 21:37:44'!
+!Portfolio methodsFor: 'accessing' stamp: 'IACS 6/8/2022 23:17:33'!
 balance
-	^assets sum: [ :anAccount | anAccount balance] ifEmpty: [0].! !
+	^assets sum: [ :anAsset | anAsset balance] ifEmpty: [0].! !
 
 
-!Portfolio methodsFor: 'adding' stamp: 'IACS 6/8/2022 21:37:43'!
-add: aReceptiveAccount 
-	assets add: aReceptiveAccount.! !
+!Portfolio methodsFor: 'adding' stamp: 'IACS 6/8/2022 23:17:12'!
+add: anAsset 
+	assets add: anAsset.! !
 
+
+!Portfolio methodsFor: 'initialization' stamp: 'IACS 6/8/2022 23:54:38'!
+hasAccount: anAccount
+	^assets anySatisfy: [ :anAsset | anAsset isOrContains: anAccount].! !
+
+!Portfolio methodsFor: 'initialization' stamp: 'IACS 6/8/2022 23:20:11'!
+hasRegistered: aTransaction
+	^assets anySatisfy: [:asset | asset hasRegistered: aTransaction].! !
 
 !Portfolio methodsFor: 'initialization' stamp: 'IACS 6/8/2022 21:37:43'!
 initialize
 	assets := OrderedCollection new.! !
+
+!Portfolio methodsFor: 'initialization' stamp: 'IACS 6/8/2022 23:56:23'!
+isOrContains: anAccount
+	^assets includes: anAccount.! !
+
+!Portfolio methodsFor: 'initialization' stamp: 'IACS 6/9/2022 00:00:37'!
+obtainTransactionsFrom: anAccount
+	(self hasAccount: anAccount) ifFalse: [self error: Portfolio accountIsNotInPortfolioErrorDescription].
+	^anAccount transactions. ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
+Portfolio class
+	instanceVariableNames: ''!
+
+!Portfolio class methodsFor: 'exception handling' stamp: 'IACS 6/8/2022 23:58:03'!
+accountIsNotInPortfolioErrorDescription
+	^'That account is not present in the portfolio'.! !
 
 
 !classDefinition: #Transference category: 'ServiciosFinancieros-Ejercicio'!
