@@ -293,14 +293,32 @@ for: aValue
 
 !classDefinition: #DepositForTransference category: 'ServiciosFinancieros-Ejercicio'!
 Deposit subclass: #DepositForTransference
-	instanceVariableNames: ''
+	instanceVariableNames: 'transference'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!DepositForTransference methodsFor: 'associating' stamp: 'IACS 6/8/2022 09:50:46'!
+
+!DepositForTransference methodsFor: 'initialization' stamp: 'IACS 6/8/2022 23:06:05'!
+initializeFor: anAmount withTransfer: aTransference 
+	value := anAmount.
+	transference := aTransference.! !
+
+
+!DepositForTransference methodsFor: 'as yet unclassified' stamp: 'IACS 6/8/2022 23:08:56'!
 counterpart
-	^Withdraw for: value.! !
+	^transference depositCounterpart.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'DepositForTransference class' category: 'ServiciosFinancieros-Ejercicio'!
+DepositForTransference class
+	instanceVariableNames: ''!
+
+
+!DepositForTransference class methodsFor: 'instance creation' stamp: 'IACS 6/8/2022 23:02:15'!
+for: anAmount withTransfer: aTransference 
+	^self new initializeFor: anAmount withTransfer: aTransference ! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
@@ -344,14 +362,30 @@ for: aValue
 
 !classDefinition: #WithdrawForTransference category: 'ServiciosFinancieros-Ejercicio'!
 Withdraw subclass: #WithdrawForTransference
-	instanceVariableNames: ''
+	instanceVariableNames: 'transference'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!WithdrawForTransference methodsFor: 'associating' stamp: 'IACS 6/8/2022 09:51:06'!
+!WithdrawForTransference methodsFor: 'associating' stamp: 'IACS 6/8/2022 22:55:38'!
 counterpart
-	^Deposit for: value.! !
+	^transference withdrawCounterpart.! !
+
+
+!WithdrawForTransference methodsFor: 'initialization' stamp: 'IACS 6/8/2022 23:06:10'!
+initializeFor: anAmount withTransfer: aTransference 
+	value := anAmount.
+	transference := aTransference.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'WithdrawForTransference class' category: 'ServiciosFinancieros-Ejercicio'!
+WithdrawForTransference class
+	instanceVariableNames: ''!
+
+!WithdrawForTransference class methodsFor: 'instance creation' stamp: 'IACS 6/8/2022 23:02:55'!
+for: anAmount withTransfer: aTransference 
+	^self new initializeFor: anAmount withTransfer: aTransference ! !
 
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
@@ -383,25 +417,24 @@ Object subclass: #Transference
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Transference methodsFor: 'instance creation' stamp: 'IACS 6/8/2022 22:30:17'!
+!Transference methodsFor: 'instance creation' stamp: 'IACS 6/8/2022 23:01:01'!
 initializeTransfer: anAmount from: aDebitorAccount to: aCreditorAccount 
 	(anAmount positive not)ifTrue: [self error: Transference invalidAmountErrorDescription].
-	deposit := DepositForTransference for: anAmount.
-	withdraw := WithdrawForTransference for: anAmount.
+	deposit := DepositForTransference for: anAmount withTransfer: self.
+	withdraw := WithdrawForTransference for: anAmount withTransfer: self.
 	amount := anAmount.
 	aDebitorAccount register: withdraw.
 	aCreditorAccount register: deposit.! !
 
 
-!Transference methodsFor: 'execution' stamp: 'IACS 6/7/2022 10:39:50'!
-execute
-	Withdraw register: amount on: debitor.
-	Deposit register: amount on: creditor.! !
-
 
 !Transference methodsFor: 'accessing' stamp: 'IACS 6/8/2022 22:24:27'!
 deposit
 	^deposit.! !
+
+!Transference methodsFor: 'accessing' stamp: 'IACS 6/8/2022 23:07:32'!
+depositCounterpart
+	^withdraw.! !
 
 !Transference methodsFor: 'accessing' stamp: 'IACS 6/7/2022 11:09:38'!
 value
@@ -410,6 +443,10 @@ value
 !Transference methodsFor: 'accessing' stamp: 'IACS 6/8/2022 22:24:34'!
 withdraw
 	^withdraw.! !
+
+!Transference methodsFor: 'accessing' stamp: 'IACS 6/8/2022 23:08:06'!
+withdrawCounterpart
+	^deposit.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
