@@ -1,60 +1,61 @@
-!classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
-TestCase subclass: #ReceptiveAccountTest
+!classDefinition: #AccountTest category: 'ServiciosFinancieros-Ejercicio'!
+TestCase subclass: #AccountTest
 	instanceVariableNames: 'debitorAccount creditorAccount transferenceFor69 accountWithTenThousandPesos accountWithNegativeFiveThousandPesos'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:10:43'!
+!AccountTest methodsFor: 'transactions tests' stamp: 'IACS 6/8/2022 22:36:04'!
 test01ReceptiveAccountHaveZeroAsBalanceWhenCreated 
 
 	| account |
 	
-	account := ReceptiveAccount new.
+	account := Account new.
 
 	self assert: 0 equals: account balance
 ! !
 
-!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:14:20'!
+!AccountTest methodsFor: 'transactions tests' stamp: 'IACS 6/8/2022 22:36:03'!
 test02DepositIncreasesBalanceOnTransactionValue 
 
 	| account |
 	
-	account := ReceptiveAccount  new.
+	account := Account  new.
 	Deposit register: 100 * peso on: account.
 		
 	self assert: 100 * peso equals: account balance
 ! !
 
-!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:14:24'!
+!AccountTest methodsFor: 'transactions tests' stamp: 'IACS 6/8/2022 22:36:03'!
 test03WithdrawDecreasesBalanceOnTransactionValue 
 
 	| account |
 	
-	account := ReceptiveAccount new.
+	account := Account new.
 	Deposit register: 100 * peso on: account.
 	Withdraw register: 50 * peso on: account.
 		
 	self assert: 50 * peso equals: account balance
 ! !
 
-!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:10:14'!
+!AccountTest methodsFor: 'transactions tests' stamp: 'IACS 6/8/2022 22:36:04'!
 test04WithdrawValueMustBePositive 
 
 	| account withdrawValue |
 	
-	account := ReceptiveAccount new.
+	account := Account new.
+	
 	withdrawValue := 50 * peso.
 	
 	self assert: withdrawValue equals: (Withdraw register: withdrawValue on: account) value
 ! !
 
-!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:10:22'!
+!AccountTest methodsFor: 'transactions tests' stamp: 'IACS 6/8/2022 22:36:04'!
 test05ReceptiveAccountKnowsRegisteredTransactions 
 
 	| account deposit withdraw |
 	
-	account := ReceptiveAccount new.
+	account := Account new.
 	deposit := Deposit register: 100 * peso on: account.
 	withdraw := Withdraw register: 50 * peso on: account.
 		
@@ -62,12 +63,12 @@ test05ReceptiveAccountKnowsRegisteredTransactions
 	self assert: (account hasRegistered: withdraw).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:12:14'!
+!AccountTest methodsFor: 'transactions tests' stamp: 'IACS 6/8/2022 22:36:04'!
 test06ReceptiveAccountDoNotKnowNotRegisteredTransactions
 
 	| account deposit withdraw |
 	
-	account := ReceptiveAccount new.
+	account := Account new.
 	deposit :=  Deposit for: 100 * peso.
 	withdraw := Withdraw for: 50 * peso.
 		
@@ -75,12 +76,12 @@ test06ReceptiveAccountDoNotKnowNotRegisteredTransactions
 	self deny: (account hasRegistered: withdraw).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'transactions tests' stamp: 'LL 7/1/2021 03:12:23'!
+!AccountTest methodsFor: 'transactions tests' stamp: 'IACS 6/8/2022 22:36:04'!
 test07AccountKnowsItsTransactions 
 
 	| account deposit |
 	
-	account := ReceptiveAccount new.
+	account := Account new.
 	
 	deposit := Deposit register: 50 * peso on: account.
 		
@@ -89,60 +90,63 @@ test07AccountKnowsItsTransactions
 ! !
 
 
-!ReceptiveAccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 11:12:47'!
+!AccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/8/2022 22:38:56'!
 test08ATransferenceBetweenTwoAccountsChangesTheBalancesAccordingly
-	| transference |
-	transference := Transference createTransferOf: 50*peso from: debitorAccount to: creditorAccount .
-	transference execute.
-	self assert: -50*peso equals: debitorAccount balance.
-	self assert: 50*peso equals: creditorAccount balance.
+	| aDebitor aCreditor aTransference |
+	
+	aDebitor := Account new.
+	aCreditor := Account new.
+	Transference transfer: 50*peso from: aDebitor to: aCreditor.
+	
+	self assert: -50*peso equals: aDebitor balance.
+	self assert: 50*peso equals: aCreditor balance.
 	! !
 
-!ReceptiveAccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 11:13:10'!
+!AccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/8/2022 22:23:52'!
 test09ATransferenceCantBeCreatedWithoutAPositiveAmount
-	self should: [Transference createTransferOf: -50*peso from: debitorAccount to: creditorAccount .]
+	self should: [Transference transfer: -50*peso from: debitorAccount to: creditorAccount .]
 	raise: Error
 	withExceptionDo:
 	[ :anError | self assert: anError messageText = Transference invalidAmountErrorDescription].
 	
 	! !
 
-!ReceptiveAccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 12:15:56'!
+!AccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 12:15:56'!
 test10ATransferenceCanBeAskedForItsValue
 	self assert: 69*peso equals: transferenceFor69 value.
 	
 	! !
 
-!ReceptiveAccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 12:15:43'!
+!AccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 12:15:43'!
 test11ATransferenceCanBeAskedForItsDepositTransaction
 	self assert: 69*peso equals: transferenceFor69 deposit value.
 	
 	! !
 
-!ReceptiveAccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 12:15:32'!
+!AccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 12:15:32'!
 test12ATransferenceCanBeAskedForItsWithdrawTransaction
 	self assert: 69*peso equals: transferenceFor69 withdraw value.
 	
 	! !
 
-!ReceptiveAccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 12:39:39'!
+!AccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 12:39:39'!
 test13TheDepositOfATransactionCanBeAskedForItsCounterpart
 	| withdrawToCompareWith |
 	withdrawToCompareWith := Withdraw for: 69*peso.
 	self assert: withdrawToCompareWith = transferenceFor69 deposit counterpart.! !
 
-!ReceptiveAccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 12:39:39'!
+!AccountTest methodsFor: 'transferences tests' stamp: 'IACS 6/7/2022 12:39:39'!
 test14TheWithdrawOfATransactionCanBeAskedForItsCounterpart
 	| depositToCompareWith |
 	depositToCompareWith := Deposit for: 69*peso.
 	self assert: depositToCompareWith = transferenceFor69 withdraw counterpart.! !
 
 
-!ReceptiveAccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 19:35:54'!
+!AccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 19:35:54'!
 test15APortfolioIsCreatedWithBalanceZero
 	self assert: 0 equals: Portfolio new balance. ! !
 
-!ReceptiveAccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 19:52:57'!
+!AccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 19:52:57'!
 test16WhenWeAddAnAccountToAPortfolioItYieldsTheBalanceOfThatAccount
 	| aPortfolio |
 	aPortfolio := Portfolio new.
@@ -150,7 +154,7 @@ test16WhenWeAddAnAccountToAPortfolioItYieldsTheBalanceOfThatAccount
 	self assert: 10000*peso equals: aPortfolio balance.
 	! !
 
-!ReceptiveAccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 19:53:47'!
+!AccountTest methodsFor: 'portfolio tests' stamp: 'IACS 6/8/2022 19:53:47'!
 test17TheBalanceOfAPortfolioWithTwoAccountsIsTheSumOfTheBalancesOfTheAccounts
 	| aPortfolio |
 	aPortfolio := Portfolio new.
@@ -160,17 +164,53 @@ test17TheBalanceOfAPortfolioWithTwoAccountsIsTheSumOfTheBalancesOfTheAccounts
 	! !
 
 
-!ReceptiveAccountTest methodsFor: 'setUp/tearDown' stamp: 'IACS 6/8/2022 19:52:07'!
+!AccountTest methodsFor: 'setUp/tearDown' stamp: 'IACS 6/8/2022 22:36:03'!
 setUp
-	debitorAccount := ReceptiveAccount new.
-	creditorAccount := ReceptiveAccount new.
-	transferenceFor69 := Transference createTransferOf: 69*peso from: debitorAccount to: creditorAccount.
+	debitorAccount := Account new.
+	creditorAccount := Account new.
+	transferenceFor69 := Transference transfer: 69*peso from: debitorAccount to: creditorAccount.
 	
-	accountWithTenThousandPesos := ReceptiveAccount new.
+	accountWithTenThousandPesos := Account new.
 	Deposit register: 10000*peso on: accountWithTenThousandPesos.
 	
-	accountWithNegativeFiveThousandPesos := ReceptiveAccount new.
+	accountWithNegativeFiveThousandPesos := Account new.
 	Withdraw register: 5000*peso on: accountWithNegativeFiveThousandPesos. ! !
+
+
+!classDefinition: #Account category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Account
+	instanceVariableNames: 'transactions'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Account methodsFor: 'initialization' stamp: 'NR 10/17/2019 15:06:56'!
+initialize
+
+	transactions := OrderedCollection new.! !
+
+
+!Account methodsFor: 'main protocol' stamp: 'IACS 6/7/2022 10:10:14'!
+balance
+
+	^transactions sum: [ :aTransaction | aTransaction effectOnBalance ] ifEmpty: [ 0 ]! !
+
+!Account methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
+hasRegistered: aTransaction
+
+	^ transactions includes: aTransaction 
+! !
+
+!Account methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
+register: aTransaction
+
+	transactions add: aTransaction 
+! !
+
+!Account methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
+transactions 
+
+	^ transactions copy! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -316,75 +356,41 @@ counterpart
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Portfolio
-	instanceVariableNames: 'accounts'
+	instanceVariableNames: 'assets'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Portfolio methodsFor: 'accessing' stamp: 'IACS 6/8/2022 19:45:33'!
+!Portfolio methodsFor: 'accessing' stamp: 'IACS 6/8/2022 21:37:44'!
 balance
-	^accounts sum: [ :anAccount | anAccount balance] ifEmpty: [0].! !
+	^assets sum: [ :anAccount | anAccount balance] ifEmpty: [0].! !
 
 
-!Portfolio methodsFor: 'adding' stamp: 'IACS 6/8/2022 19:43:10'!
+!Portfolio methodsFor: 'adding' stamp: 'IACS 6/8/2022 21:37:43'!
 add: aReceptiveAccount 
-	accounts add: aReceptiveAccount.! !
+	assets add: aReceptiveAccount.! !
 
 
-!Portfolio methodsFor: 'initialization' stamp: 'IACS 6/8/2022 19:44:20'!
+!Portfolio methodsFor: 'initialization' stamp: 'IACS 6/8/2022 21:37:43'!
 initialize
-	accounts := OrderedCollection new.! !
-
-
-!classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
-Object subclass: #ReceptiveAccount
-	instanceVariableNames: 'transactions'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros-Ejercicio'!
-
-!ReceptiveAccount methodsFor: 'initialization' stamp: 'NR 10/17/2019 15:06:56'!
-initialize
-
-	transactions := OrderedCollection new.! !
-
-
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'IACS 6/7/2022 10:10:14'!
-balance
-
-	^transactions sum: [ :aTransaction | aTransaction effectOnBalance ] ifEmpty: [ 0 ]! !
-
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
-hasRegistered: aTransaction
-
-	^ transactions includes: aTransaction 
-! !
-
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
-register: aTransaction
-
-	transactions add: aTransaction 
-! !
-
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
-transactions 
-
-	^ transactions copy! !
+	assets := OrderedCollection new.! !
 
 
 !classDefinition: #Transference category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Transference
-	instanceVariableNames: 'amount debitor creditor'
+	instanceVariableNames: 'amount deposit withdraw'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Transference methodsFor: 'instance creation' stamp: 'IACS 6/7/2022 10:52:01'!
-initializeCreateTransferOf: anAmount from: aDebitor to: aCreditor
+!Transference methodsFor: 'instance creation' stamp: 'IACS 6/8/2022 22:30:17'!
+initializeTransfer: anAmount from: aDebitorAccount to: aCreditorAccount 
 	(anAmount positive not)ifTrue: [self error: Transference invalidAmountErrorDescription].
+	deposit := DepositForTransference for: anAmount.
+	withdraw := WithdrawForTransference for: anAmount.
 	amount := anAmount.
-	debitor := aDebitor.
-	creditor := aCreditor.! !
+	aDebitorAccount register: withdraw.
+	aCreditorAccount register: deposit.! !
 
 
 !Transference methodsFor: 'execution' stamp: 'IACS 6/7/2022 10:39:50'!
@@ -393,17 +399,17 @@ execute
 	Deposit register: amount on: creditor.! !
 
 
-!Transference methodsFor: 'accessing' stamp: 'IACS 6/8/2022 09:51:42'!
+!Transference methodsFor: 'accessing' stamp: 'IACS 6/8/2022 22:24:27'!
 deposit
-	^DepositForTransference for: amount.! !
+	^deposit.! !
 
 !Transference methodsFor: 'accessing' stamp: 'IACS 6/7/2022 11:09:38'!
 value
 	^amount.! !
 
-!Transference methodsFor: 'accessing' stamp: 'IACS 6/8/2022 09:51:51'!
+!Transference methodsFor: 'accessing' stamp: 'IACS 6/8/2022 22:24:34'!
 withdraw
-	^WithdrawForTransference for: amount.! !
+	^withdraw.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -411,9 +417,9 @@ withdraw
 Transference class
 	instanceVariableNames: ''!
 
-!Transference class methodsFor: 'instance creation' stamp: 'IACS 6/7/2022 10:37:30'!
-createTransferOf: anAmount from: aDebitor to: aCreditor 
-	^self new initializeCreateTransferOf: anAmount from: aDebitor to: aCreditor. ! !
+!Transference class methodsFor: 'instance creation' stamp: 'IACS 6/8/2022 22:13:28'!
+transfer: aNumberOfPesos from: aReceptiveAccount to: anotherReceptiveAccount 
+	^self new initializeTransfer: aNumberOfPesos from: aReceptiveAccount to: anotherReceptiveAccount ! !
 
 
 !Transference class methodsFor: 'exception handling' stamp: 'IACS 6/7/2022 10:53:48'!
