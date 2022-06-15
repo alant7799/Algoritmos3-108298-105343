@@ -309,61 +309,60 @@ TestCase subclass: #ReportTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/13/2022 21:00:53'!
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 00:15:44'!
 test01AccountSummaryKnowsHowToShowAReportWithADepositFor100
 	| account accountSummary|
 	account := 	ReceptiveAccount new.
 	account register: (Deposit for: 100).
 	accountSummary := (AccountSummary new) obtainSummaryFor: account.
-	self assert: accountSummary equals: (OrderedCollection with: 'Depósito por 100 pesos').
+	self assert: accountSummary equals: #('Depósito por 100 pesos' 'Balance = 100 pesos') asOrderedCollection .
 	! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/13/2022 21:01:01'!
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 00:17:23'!
 test02AccountSummaryKnowsHowToShowAReportWithADepositFor200
 	| account accountSummary|
 	account := 	ReceptiveAccount new.
 	account register: (Deposit for: 200).
 	accountSummary := (AccountSummary new) obtainSummaryFor: account.
-	self assert: accountSummary equals: (OrderedCollection with: 'Depósito por 200 pesos').
+	self assert: accountSummary equals: #( 'Depósito por 200 pesos' 'Balance = 200 pesos') asOrderedCollection.
 	! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/13/2022 21:01:15'!
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 00:18:26'!
 test03AccountSummaryKnowsHowToShowAReportWithAWithdrawFor200
 	| account accountSummary|
 	account := 	ReceptiveAccount new.
 	account register: (Withdraw for: 200).
 	accountSummary := (AccountSummary new) obtainSummaryFor: account.
-	self assert: accountSummary equals: (OrderedCollection with: 'Extracción por 200 pesos').
+	self assert: accountSummary equals: #( 'Extracción por 200 pesos' 'Balance = -200 pesos') asOrderedCollection.
 	! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/13/2022 21:01:24'!
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 00:19:12'!
 test04AccountSummaryKnowsHowToShowAReportWithAWithdrawFor100
 	| account accountSummary|
 	account := 	ReceptiveAccount new.
 	account register: (Withdraw for: 100).
 	accountSummary := (AccountSummary new) obtainSummaryFor: account.
-	self assert: accountSummary equals: (OrderedCollection with: 'Extracción por 100 pesos').
+	self assert: accountSummary equals: #( 'Extracción por 100 pesos' 'Balance = -100 pesos') asOrderedCollection.
 	! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/13/2022 21:24:11'!
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 00:30:40'!
 test05AccountSummaryKnowsHowToShowAReportWithATransferForDeposit100
 	| destinationAccount originAccount accountSummary|
 	destinationAccount := 	ReceptiveAccount new.
 	originAccount := ReceptiveAccount new.
-	Transfer amount: 100 * peso from: originAccount to: destinationAccount.
+	Transfer amount: 100 from: originAccount to: destinationAccount.
 	accountSummary := (AccountSummary new) obtainSummaryFor: destinationAccount.
-	self assert: accountSummary equals: (#( 'Entrada por transferencia de 100 * pesos') asOrderedCollection).
+	self assert: accountSummary equals: #( 'Entrada por transferencia de 100 pesos' 'Balance = 100 pesos') asOrderedCollection.
 	! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/13/2022 21:14:46'!
-test06AccountSummaryKnowsHowToShowAReportWithAWithdrawFor100AndADepositFor200
-	| account accountSummary|
-	account := 	ReceptiveAccount new.
-	account register: (Withdraw for: 100).
-	account register: (Deposit for: 200).
-	accountSummary := (AccountSummary new) obtainSummaryFor: account.
-	self assert: accountSummary equals: (#( 'Extracción por 100 pesos'  'Depósito por 200 pesos') asOrderedCollection).
-	! !
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 00:33:43'!
+test06AccountSummaryKnowsHowToShowAReportWithATransferForWithdrawFor100
+	| destinationAccount originAccount accountSummary|
+	destinationAccount := 	ReceptiveAccount new.
+	originAccount := ReceptiveAccount new.
+	Transfer amount: 200 from: originAccount to: destinationAccount.
+	accountSummary := (AccountSummary new) obtainSummaryFor: originAccount .
+	self assert: accountSummary equals: #( 'Salida por transferencia de 200 pesos' 'Balance = -200 pesos') asOrderedCollection.! !
 
 
 !classDefinition: #TransferTest category: 'ServiciosFinancieros-Solucion'!
@@ -709,12 +708,14 @@ Object subclass: #AccountSummary
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'AT 6/13/2022 21:02:00'!
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 00:06:06'!
 obtainSummaryFor: aReceptiveAccount 
 	| collectionWithPrintedTransactions |
 	collectionWithPrintedTransactions := OrderedCollection new.
 	(aReceptiveAccount transactions) do: [:aTransaction | collectionWithPrintedTransactions add: (aTransaction print)].
-	^collectionWithPrintedTransactions.! !
+	collectionWithPrintedTransactions add: (('Balance = ' append: ((aReceptiveAccount balance) asString)) append: ' pesos').
+	^collectionWithPrintedTransactions.
+	! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Solucion'!
@@ -849,10 +850,10 @@ affectBalance: aBalance
 	^aBalance + self value! !
 
 
-!TransferDepositLeg methodsFor: 'AA' stamp: 'AT 6/13/2022 21:23:43'!
+!TransferDepositLeg methodsFor: 'AA' stamp: 'AT 6/15/2022 00:28:30'!
 print
 	| string |
-	string := 'Entrada por transferencia de ' append: ((self value) asString).
+	string := ('Entrada por transferencia de ' append: ((self value) asString)) append: ' pesos'.
 	^string.! !
 
 
@@ -867,6 +868,12 @@ TransferLeg subclass: #TransferWithdrawLeg
 depositLeg
 
 	^transfer depositLeg! !
+
+!TransferWithdrawLeg methodsFor: 'accessing' stamp: 'AT 6/15/2022 00:34:13'!
+print
+	| string |
+	string := ('Salida por transferencia de ' append: ((self value) asString)) append: ' pesos'.
+	^string.! !
 
 
 !TransferWithdrawLeg methodsFor: 'balance' stamp: 'LL 9/20/2020 22:27:55'!
