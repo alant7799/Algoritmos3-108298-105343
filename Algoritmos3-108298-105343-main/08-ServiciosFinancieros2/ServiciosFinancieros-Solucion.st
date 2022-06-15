@@ -326,8 +326,8 @@ test02AccountSummaryKnowsHowToShowAReportWithADepositFor100
 	self assert: accountSummary equals: #('Depósito por 100 pesos' 'Balance = 100 pesos') asOrderedCollection .
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 19:22:29'!
-test04AccountSummaryKnowsHowToShowAReportWithAWithdrawFor200
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 19:29:31'!
+test03AccountSummaryKnowsHowToShowAReportWithAWithdrawFor200
 	| account accountSummary|
 	account := 	ReceptiveAccount new.
 	account register: (Withdraw for: 200).
@@ -335,8 +335,8 @@ test04AccountSummaryKnowsHowToShowAReportWithAWithdrawFor200
 	self assert: accountSummary equals: #( 'Extracción por 200 pesos' 'Balance = -200 pesos') asOrderedCollection.
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'AT 6/15/2022 00:30:40'!
-test05AccountSummaryKnowsHowToShowAReportWithATransferForDeposit100
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 19:30:19'!
+test04AccountSummaryKnowsHowToShowAReportWithATransferForDeposit100
 	| destinationAccount originAccount accountSummary|
 	destinationAccount := 	ReceptiveAccount new.
 	originAccount := ReceptiveAccount new.
@@ -345,14 +345,28 @@ test05AccountSummaryKnowsHowToShowAReportWithATransferForDeposit100
 	self assert: accountSummary equals: #( 'Entrada por transferencia de 100 pesos' 'Balance = 100 pesos') asOrderedCollection.
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'AT 6/15/2022 00:33:43'!
-test06AccountSummaryKnowsHowToShowAReportWithATransferForWithdrawFor100
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 19:40:06'!
+test05AccountSummaryKnowsHowToShowAReportWithATransferForWithdrawFor200
 	| destinationAccount originAccount accountSummary|
 	destinationAccount := 	ReceptiveAccount new.
 	originAccount := ReceptiveAccount new.
 	Transfer amount: 200 from: originAccount to: destinationAccount.
 	accountSummary := (AccountSummary new) obtainSummaryFor: originAccount .
 	self assert: accountSummary equals: #( 'Salida por transferencia de 200 pesos' 'Balance = -200 pesos') asOrderedCollection.! !
+
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 19:42:19'!
+test06AccountSummaryKnowsHowToShowAReportWithMultipleTransactions
+	| destinationAccount originAccount accountSummary|
+	destinationAccount := 	ReceptiveAccount new.
+	originAccount := ReceptiveAccount new.
+	Transfer amount: 200 from: originAccount to: destinationAccount.
+	
+	originAccount register: (Deposit for: 300).
+	
+	originAccount register: (Withdraw for: 100).
+
+	accountSummary := (AccountSummary new) obtainSummaryFor: originAccount .
+	self assert: accountSummary equals: #( 'Salida por transferencia de 200 pesos' 'Depósito por 300 pesos' 'Extracción por 100 pesos' 'Balance = 0 pesos') asOrderedCollection.! !
 
 
 !classDefinition: #TransferTest category: 'ServiciosFinancieros-Solucion'!
