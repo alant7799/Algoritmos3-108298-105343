@@ -248,6 +248,41 @@ setUp
 	aPortfolioWithBalanceOfNegativeFiveThousandPesos add: accountWithNegativeFiveThousandPesos.! !
 
 
+!classDefinition: #ReportTest category: 'ServiciosFinancieros2-Ejercicio'!
+TestCase subclass: #ReportTest
+	instanceVariableNames: 'debitorAccount creditorAccount transferenceFor69 accountWithTenThousandPesos accountWithNegativeFiveThousandPesos aPortfolioWithBalanceOfFiveThousandPesos aPortfolioWithBalanceOfNegativeFiveThousandPesos'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2-Ejercicio'!
+
+!ReportTest methodsFor: 'report tests' stamp: 'IACS 6/14/2022 22:24:17'!
+test1AnAccountSummaryCreatedForAnAccountWithNoTransactionsIsEmpty
+	| anAccountWithoutTransactions accountSummary |
+	anAccountWithoutTransactions := Account new.
+	accountSummary := Report newAccountSummaryFor: anAccountWithoutTransactions.
+	self assert: (accountSummary sameAs: '').! !
+
+
+!ReportTest methodsFor: 'setUp/tearDown' stamp: 'IACS 6/14/2022 22:13:05'!
+setUp
+	debitorAccount := Account new.
+	creditorAccount := Account new.
+	transferenceFor69 := Transference transfer: 69*peso from: debitorAccount to: creditorAccount.
+	
+	accountWithTenThousandPesos := Account new.
+	Deposit register: 10000*peso on: accountWithTenThousandPesos.
+	
+	accountWithNegativeFiveThousandPesos := Account new.
+	Withdraw register: 5000*peso on: accountWithNegativeFiveThousandPesos. 
+	
+	aPortfolioWithBalanceOfFiveThousandPesos := Portfolio new.
+	aPortfolioWithBalanceOfFiveThousandPesos add: accountWithTenThousandPesos.
+	aPortfolioWithBalanceOfFiveThousandPesos add: accountWithNegativeFiveThousandPesos.
+	
+	aPortfolioWithBalanceOfNegativeFiveThousandPesos := Portfolio new.
+	aPortfolioWithBalanceOfNegativeFiveThousandPesos add: accountWithNegativeFiveThousandPesos.! !
+
+
 !classDefinition: #Account category: 'ServiciosFinancieros2-Ejercicio'!
 Object subclass: #Account
 	instanceVariableNames: 'transactions'
@@ -526,6 +561,24 @@ Portfolio class
 !Portfolio class methodsFor: 'exception handling' stamp: 'IACS 6/8/2022 23:58:03'!
 accountIsNotInPortfolioErrorDescription
 	^'That account is not present in the portfolio'.! !
+
+
+!classDefinition: #Report category: 'ServiciosFinancieros2-Ejercicio'!
+Object subclass: #Report
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2-Ejercicio'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Report class' category: 'ServiciosFinancieros2-Ejercicio'!
+Report class
+	instanceVariableNames: ''!
+
+!Report class methodsFor: 'instance creation' stamp: 'IACS 6/14/2022 22:25:56'!
+newAccountSummaryFor: anAccount 
+	^''.! !
 
 
 !classDefinition: #Transference category: 'ServiciosFinancieros2-Ejercicio'!
