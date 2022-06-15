@@ -309,8 +309,16 @@ TestCase subclass: #ReportTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 00:15:44'!
-test01AccountSummaryKnowsHowToShowAReportWithADepositFor100
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 19:25:34'!
+test01AccountSummaryOnlyShowsBalance0IfTheAccountHasNotMadeAnyTransactions
+
+	| account accountSummary|
+	account := 	ReceptiveAccount new.
+	accountSummary := (AccountSummary new) obtainSummaryFor: account.
+	self assert: accountSummary equals: #('Balance = 0 pesos') asOrderedCollection .! !
+
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 19:22:01'!
+test02AccountSummaryKnowsHowToShowAReportWithADepositFor100
 	| account accountSummary|
 	account := 	ReceptiveAccount new.
 	account register: (Deposit for: 100).
@@ -318,17 +326,8 @@ test01AccountSummaryKnowsHowToShowAReportWithADepositFor100
 	self assert: accountSummary equals: #('Depósito por 100 pesos' 'Balance = 100 pesos') asOrderedCollection .
 	! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 00:17:23'!
-test02AccountSummaryKnowsHowToShowAReportWithADepositFor200
-	| account accountSummary|
-	account := 	ReceptiveAccount new.
-	account register: (Deposit for: 200).
-	accountSummary := (AccountSummary new) obtainSummaryFor: account.
-	self assert: accountSummary equals: #( 'Depósito por 200 pesos' 'Balance = 200 pesos') asOrderedCollection.
-	! !
-
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 00:18:26'!
-test03AccountSummaryKnowsHowToShowAReportWithAWithdrawFor200
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 19:22:29'!
+test04AccountSummaryKnowsHowToShowAReportWithAWithdrawFor200
 	| account accountSummary|
 	account := 	ReceptiveAccount new.
 	account register: (Withdraw for: 200).
@@ -336,16 +335,7 @@ test03AccountSummaryKnowsHowToShowAReportWithAWithdrawFor200
 	self assert: accountSummary equals: #( 'Extracción por 200 pesos' 'Balance = -200 pesos') asOrderedCollection.
 	! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 00:19:12'!
-test04AccountSummaryKnowsHowToShowAReportWithAWithdrawFor100
-	| account accountSummary|
-	account := 	ReceptiveAccount new.
-	account register: (Withdraw for: 100).
-	accountSummary := (AccountSummary new) obtainSummaryFor: account.
-	self assert: accountSummary equals: #( 'Extracción por 100 pesos' 'Balance = -100 pesos') asOrderedCollection.
-	! !
-
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 00:30:40'!
+!ReportTest methodsFor: 'tests' stamp: 'AT 6/15/2022 00:30:40'!
 test05AccountSummaryKnowsHowToShowAReportWithATransferForDeposit100
 	| destinationAccount originAccount accountSummary|
 	destinationAccount := 	ReceptiveAccount new.
@@ -355,7 +345,7 @@ test05AccountSummaryKnowsHowToShowAReportWithATransferForDeposit100
 	self assert: accountSummary equals: #( 'Entrada por transferencia de 100 pesos' 'Balance = 100 pesos') asOrderedCollection.
 	! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 00:33:43'!
+!ReportTest methodsFor: 'tests' stamp: 'AT 6/15/2022 00:33:43'!
 test06AccountSummaryKnowsHowToShowAReportWithATransferForWithdrawFor100
 	| destinationAccount originAccount accountSummary|
 	destinationAccount := 	ReceptiveAccount new.
@@ -372,7 +362,7 @@ TestCase subclass: #TransferTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 21:07:03'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 21:07:03'!
 test01ATransferDecreasesBalanceFromOriginAccountAndIncreasesItForDestinationAccount
 
 	| destinationAccount originAccount |
@@ -388,7 +378,7 @@ test01ATransferDecreasesBalanceFromOriginAccountAndIncreasesItForDestinationAcco
 	self assert: 8 * peso equals: originAccount balance.
 	self assert: 12 * peso equals: destinationAccount balance.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 21:12:28'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 21:12:28'!
 test02ATransferKnowsItsValue
 
 	| destinationAccount originAccount transfer |
@@ -403,7 +393,7 @@ test02ATransferKnowsItsValue
 	
 	self assert: 2 * peso equals: transfer value.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:01:44'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:01:44'!
 test03DepositLegKnowsItsWithdrawCounterpart
 
 	| destinationAccount originAccount transfer |
@@ -418,7 +408,7 @@ test03DepositLegKnowsItsWithdrawCounterpart
 	
 	self assert: transfer withdrawLeg equals: transfer depositLeg withdrawLeg! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:01:51'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:01:51'!
 test04WithdrawLegKnowsItsDepositCounterpart
 
 	| destinationAccount originAccount transfer |
@@ -433,7 +423,7 @@ test04WithdrawLegKnowsItsDepositCounterpart
 	
 	self assert: transfer depositLeg equals: transfer withdrawLeg depositLeg! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:02:36'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:02:36'!
 test05OriginAndDestinationAccountsCannotBeTheSame
 
 	| originAccount |
@@ -449,7 +439,7 @@ test05OriginAndDestinationAccountsCannotBeTheSame
 		]
 ! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:02:44'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:02:44'!
 test06CannotTransferAZeroAmount
 
 	| originAccount destinationAccount |
