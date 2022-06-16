@@ -309,8 +309,15 @@ TestCase subclass: #ReportTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
+!ReportTest methodsFor: 'transferNet tests' stamp: 'AT 6/15/2022 22:47:13'!
+test07AskingForTheTransferNetOfAnAccountWithNoTransactionsYields0
 
-!ReportTest methodsFor: 'tests' stamp: 'AT 6/15/2022 22:47:18'!
+	| account transferNet |
+	account := 	ReceptiveAccount new.
+	transferNet := TransferNet obtainReportFor: account.
+	self assert: (transferNet sameAs: 'The transfer net for this account is 0 pesos').! !
+
+!ReportTest methodsFor: 'transferNet tests' stamp: 'AT 6/15/2022 22:47:18'!
 test08AskingForTheTransferNetOfAnAccountWithOneTransactionsYieldsTheBalanceOfThatTransaction
 
 	| debitorAccount creditorAccount transferNet |
@@ -320,7 +327,7 @@ test08AskingForTheTransferNetOfAnAccountWithOneTransactionsYieldsTheBalanceOfTha
 	transferNet := TransferNet obtainReportFor: creditorAccount.
 	self assert: (transferNet sameAs: 'The transfer net for this account is 100 pesos').! !
 
-!ReportTest methodsFor: 'tests' stamp: 'AT 6/15/2022 22:47:25'!
+!ReportTest methodsFor: 'transferNet tests' stamp: 'AT 6/15/2022 22:47:25'!
 test09AskingForTheTransferNetOfAnAccountWithMoreThanOneTransactionsYieldsTheCorrectBalance
 
 	| debitorAccount creditorAccount transferNet |
@@ -332,7 +339,7 @@ test09AskingForTheTransferNetOfAnAccountWithMoreThanOneTransactionsYieldsTheCorr
 	transferNet := TransferNet obtainReportFor: creditorAccount.
 	self assert: (transferNet sameAs: 'The transfer net for this account is 200 pesos').! !
 
-!ReportTest methodsFor: 'tests' stamp: 'AT 6/15/2022 22:47:44'!
+!ReportTest methodsFor: 'transferNet tests' stamp: 'AT 6/15/2022 22:47:44'!
 test10AskingForTheTransferNetOfAnAccountWithMoreThanOneTypeOfTransactionsYieldsTheCorrectBalance
 
 	| debitorAccount creditorAccount transferNet |
@@ -343,17 +350,53 @@ test10AskingForTheTransferNetOfAnAccountWithMoreThanOneTypeOfTransactionsYieldsT
 	transferNet := TransferNet obtainReportFor: creditorAccount.
 	self assert: (transferNet sameAs: 'The transfer net for this account is 100 pesos').! !
 
-!ReportTest methodsFor: 'tests' stamp: 'AT 6/15/2022 22:44:06'!
-test11AskingForTheTransferNetOfAnAccountWithMoreThanOneTypeOfTransactionsYieldsTheCorrectBalance
+!ReportTest methodsFor: 'transferNet tests' stamp: 'AT 6/15/2022 23:35:11'!
+test16AskingForTheTransferNetOfAPortfolioWithNoTransactionsYields0
 
-	| debitorAccount creditorAccount transferNet portfolio|
+	| portfolio account transferNet |
+	portfolio := Portfolio new.
+	account := 	ReceptiveAccount new.
+	portfolio add: account.
+	transferNet := TransferNet obtainReportFor: account.
+	self assert: (transferNet sameAs: 'The transfer net for this account is 0 pesos').! !
+
+!ReportTest methodsFor: 'transferNet tests' stamp: 'AT 6/15/2022 23:36:45'!
+test17AskingForTheTransferNetOfAPortfolioWithOneTransactionYieldsTheBalanceOfThatTransaction
+
+	| portfolio debitorAccount creditorAccount transferNet |
+	portfolio := Portfolio new.
 	debitorAccount := 	ReceptiveAccount new.
 	creditorAccount := ReceptiveAccount new.
-	portfolio := (Portfolio new) add: creditorAccount. 
-	Transfer amount: 100 from: debitorAccount to: creditorAccount.
-	creditorAccount register: (Deposit for: 400).
-	transferNet := (TransferNet new) obtainReportFor: portfolio.
+	portfolio add: creditorAccount.
+	Transfer amount: 100 from: debitorAccount to: creditorAccount. 
+	transferNet := TransferNet obtainReportFor: portfolio.
 	self assert: (transferNet sameAs: 'The transfer net for this account is 100 pesos').! !
+
+!ReportTest methodsFor: 'transferNet tests' stamp: 'AT 6/15/2022 23:37:48'!
+test18AskingForTheTransferNetOfAPortfolioWithMoreThanOneTransactionYieldsTheBalanceOfThatTransaction
+
+	| portfolio debitorAccount creditorAccount transferNet |
+	portfolio := Portfolio new.
+	debitorAccount := 	ReceptiveAccount new.
+	creditorAccount := ReceptiveAccount new.
+	portfolio add: creditorAccount.
+	portfolio add: debitorAccount.
+	Transfer amount: 100 from: debitorAccount to: creditorAccount. 
+	transferNet := TransferNet obtainReportFor: portfolio.
+	self assert: (transferNet sameAs: 'The transfer net for this account is 0 pesos').! !
+
+!ReportTest methodsFor: 'transferNet tests' stamp: 'AT 6/15/2022 23:43:53'!
+test19TransferNetKnowsHowToShowAReportForAPortfolioInsideAnotherPortfolio
+	| mainPortfolio originAccount destinationAccount transferNet secondaryPortfolio |
+	mainPortfolio := 	Portfolio new.
+	secondaryPortfolio := Portfolio new.
+	originAccount := ReceptiveAccount new.
+	destinationAccount := ReceptiveAccount new.
+	mainPortfolio add: secondaryPortfolio.
+	secondaryPortfolio add: originAccount.
+	Transfer amount: 1000 from: originAccount to: destinationAccount.
+	transferNet := TransferNet obtainReportFor: secondaryPortfolio.
+	self assert: transferNet equals: 'The transfer net for this account is -1000 pesos'.! !
 
 
 !ReportTest methodsFor: 'accountSummary tests' stamp: 'AT 6/15/2022 22:45:38'!
@@ -415,13 +458,65 @@ test06AccountSummaryKnowsHowToShowAReportWithMultipleTransactions
 	accountSummary := AccountSummary obtainReportFor: originAccount .
 	self assert: accountSummary equals: #( 'Salida por transferencia de 200 pesos' 'Depósito por 300 pesos' 'Extracción por 100 pesos' 'Balance = 0 pesos') asOrderedCollection.! !
 
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'AT 6/15/2022 22:47:13'!
-test07AskingForTheTransferNetOfAnAccountWithNoTransactionsYields0
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'AT 6/15/2022 23:15:20'!
+test11AccountSummaryOnlyShowsBalance0IfportfolioHasNotMadeAnyTransactions
 
-	| account transferNet |
+	|portfolio account accountSummary|
+	
+	portfolio := Portfolio new.
 	account := 	ReceptiveAccount new.
-	transferNet := TransferNet obtainReportFor: account.
-	self assert: (transferNet sameAs: 'The transfer net for this account is 0 pesos').! !
+	portfolio add: account.
+	accountSummary := AccountSummary obtainReportFor: portfolio.
+	self assert: accountSummary equals: #('Balance = 0 pesos') asOrderedCollection .! !
+
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'AT 6/15/2022 23:16:34'!
+test12AccountSummaryKnowsHowToShowAReportforAPortfolioWithADepositFor100
+	|portfolio account accountSummary|
+	portfolio := Portfolio new.
+	account := 	ReceptiveAccount new.
+	portfolio add: account.
+	account register: (Deposit for: 100).
+	accountSummary := AccountSummary obtainReportFor: portfolio.
+	self assert: accountSummary equals: #('Depósito por 100 pesos' 'Balance = 100 pesos') asOrderedCollection.
+	! !
+
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'AT 6/15/2022 23:18:08'!
+test13AccountSummaryKnowsHowToShowAReportForAPortfolioWithATransferForDeposit100
+	| destinationAccount originAccount accountSummary portfolio |
+	portfolio := Portfolio new.
+	destinationAccount := 	ReceptiveAccount new.
+	originAccount := ReceptiveAccount new.
+	portfolio add: destinationAccount.
+	Transfer amount: 100 from: originAccount to: destinationAccount.
+	accountSummary := AccountSummary obtainReportFor: portfolio.
+	self assert: accountSummary equals: #( 'Entrada por transferencia de 100 pesos' 'Balance = 100 pesos') asOrderedCollection.
+	! !
+
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'AT 6/15/2022 23:22:44'!
+test14AccountSummaryKnowsHowToShowAReportForAPortfolioWithMoreThanOneAccount
+	| destinationAccount originAccount accountSummary portfolio |
+	portfolio := Portfolio new.
+	destinationAccount := 	ReceptiveAccount new.
+	originAccount := ReceptiveAccount new.
+	portfolio add: destinationAccount.
+	portfolio add: originAccount.
+	Transfer amount: 100 from: originAccount to: destinationAccount.
+	accountSummary := AccountSummary obtainReportFor: portfolio.
+	self assert: accountSummary equals: #('Entrada por transferencia de 100 pesos' 'Salida por transferencia de 100 pesos' 'Balance = 0 pesos') asOrderedCollection.
+	! !
+
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'AT 6/15/2022 23:29:18'!
+test15AccountSummaryKnowsHowToShowAReportForAPortfolioWithInsideAnotherPortfolio
+	| mainPortfolio account accountSummary secondaryPortfolio |
+	mainPortfolio := 	Portfolio new.
+	secondaryPortfolio := Portfolio new.
+	account := ReceptiveAccount new.
+	mainPortfolio add: secondaryPortfolio.
+	secondaryPortfolio add: account.
+	account register: (Deposit for: 500).
+	accountSummary := AccountSummary obtainReportFor: secondaryPortfolio.
+	self assert: accountSummary equals: #('Depósito por 500 pesos' 'Balance = 500 pesos') asOrderedCollection.
+	! !
 
 
 !classDefinition: #TransferTest category: 'ServiciosFinancieros-Solucion'!
@@ -998,11 +1093,10 @@ Report subclass: #AccountSummary
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 22:34:07'!
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 23:11:28'!
 obtainReportFor: anAccount 
 	| collectionWithPrintedTransactions |
-	collectionWithPrintedTransactions := OrderedCollection new.
-	(anAccount transactions) do: [:aTransaction | collectionWithPrintedTransactions add: (aTransaction print)].
+	collectionWithPrintedTransactions := (anAccount transactions) collect: [:aTransaction | aTransaction print].
 	collectionWithPrintedTransactions add: (('Balance = ' append: ((anAccount balance) asString)) append: ' pesos').
 	^collectionWithPrintedTransactions.
 	! !
@@ -1025,13 +1119,12 @@ Report subclass: #TransferNet
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferNet methodsFor: 'instance creation' stamp: 'AT 6/15/2022 22:34:34'!
+!TransferNet methodsFor: 'instance creation' stamp: 'AT 6/15/2022 23:12:24'!
 obtainReportFor: anAccount 
 	| transferNet transferLegs outputOfTransferNet|
 	transferLegs := (anAccount transactions) select:[:transaction | transaction isKindOf: TransferLeg].
 	transferNet := transferLegs inject: 0 into: [ :currentTransferNet :transaction | transaction affectBalance: currentTransferNet ].
 	outputOfTransferNet := 'The transfer net for this account is ' append: (transferNet asString append: ' pesos').
-	outputOfTransferNet print.
 	^outputOfTransferNet.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
