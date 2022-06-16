@@ -1091,51 +1091,47 @@ showReportOf: anAccount
 
 !classDefinition: #AccountSummary category: 'ServiciosFinancieros-Solucion'!
 Report subclass: #AccountSummary
-	instanceVariableNames: 'collectionOfTheLinesInTheSummary textOfTheSummary'
+	instanceVariableNames: 'textOfTheSummary'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountSummary methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:54:23'!
+!AccountSummary methodsFor: 'reporting' stamp: 'a 6/16/2022 13:57:57'!
 getAffectedByADeposit: aDeposit
 	| newLineAdded |
 	newLineAdded := ('Depósito por ' append: ((aDeposit value)asString append: ' pesos')).
 	newLineAdded := newLineAdded append: '\'.
 	textOfTheSummary := textOfTheSummary append: newLineAdded.
-	collectionOfTheLinesInTheSummary add: newLineAdded.
+
 	! !
 
-!AccountSummary methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:55:56'!
+!AccountSummary methodsFor: 'reporting' stamp: 'a 6/16/2022 13:58:02'!
 getAffectedByATransferDeposit: aTransferDeposit
 	| newLineAdded |
 	newLineAdded := ('Entrada por transferencia de ' append: ((aTransferDeposit value)asString append: ' pesos')).
 	newLineAdded := newLineAdded append: '\'.
 	textOfTheSummary := textOfTheSummary append: newLineAdded.
-	collectionOfTheLinesInTheSummary add: newLineAdded.
 	! !
 
-!AccountSummary methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:56:00'!
+!AccountSummary methodsFor: 'reporting' stamp: 'a 6/16/2022 13:58:07'!
 getAffectedByATransferWithdraw: aTransferWithdraw
 	| newLineAdded |
 	newLineAdded := ('Salida por transferencia de ' append: ((aTransferWithdraw value)asString append: ' pesos')).
 	newLineAdded := newLineAdded append: '\'.
 	textOfTheSummary := textOfTheSummary append: newLineAdded.
-	collectionOfTheLinesInTheSummary add: newLineAdded.
 	! !
 
-!AccountSummary methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:56:06'!
+!AccountSummary methodsFor: 'reporting' stamp: 'a 6/16/2022 13:58:12'!
 getAffectedByAWithdraw: aWithdraw
 	| newLineAdded |
 	newLineAdded := ('Extracción por ' append: ((aWithdraw value)asString append: ' pesos')).
 	newLineAdded := newLineAdded append: '\'.
 	textOfTheSummary := textOfTheSummary append: newLineAdded.
-	collectionOfTheLinesInTheSummary add: newLineAdded.
 	
 	! !
 
-!AccountSummary methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:52:58'!
+!AccountSummary methodsFor: 'reporting' stamp: 'a 6/16/2022 13:57:14'!
 obtainReportFor: anAccount 	textOfTheSummary := '\'.
-	collectionOfTheLinesInTheSummary := OrderedCollection new.
 	(anAccount transactions) do: [:aTransaction | aTransaction affectReport: self].
 	textOfTheSummary := textOfTheSummary append: (('Balance = ' append:((anAccount balance asString))) append: ' pesos\').
 	^textOfTheSummary withNewLines.
