@@ -375,41 +375,41 @@ test19TransferNetKnowsHowToShowAReportForAPortfolioInsideAnotherPortfolio
 	self assert: (mainPortfolio showReport: TransferNet) = -100.! !
 
 
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 11:15:48'!
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 12:48:01'!
 test01AccountSummaryOnlyShowsBalance0IfTheAccountHasNotMadeAnyTransactions
 	| accountSummary|
 	
 	accountSummary := accountWithNoTransactions showReport: AccountSummary.
-	self assert: accountSummary equals: #('Balance = 0 pesos') asOrderedCollection .! !
+	self assert: (accountSummary sameAs: ('\Balance = 0 pesos\') withNewLines).! !
 
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 11:19:46'!
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 12:54:54'!
 test02AccountSummaryKnowsHowToShowAReportWithADepositFor100
 	| accountSummary|
 	accountSummary := accountWithDepositFor100 showReport: AccountSummary.
-	self assert: accountSummary equals: #('Depósito por 100 pesos' 'Balance = 100 pesos') asOrderedCollection .
+	self assert: (accountSummary sameAs: ('\Depósito por 100 pesos\Balance = 100 pesos\') withNewLines).
 	! !
 
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 11:20:15'!
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 12:55:29'!
 test03AccountSummaryKnowsHowToShowAReportWithAWithdrawFor100
 	| accountSummary|
 	accountSummary := accountWithWithdrawFor100 showReport: AccountSummary.
-	self assert: accountSummary equals: #( 'Extracción por 100 pesos' 'Balance = -100 pesos') asOrderedCollection.
+	self assert: (accountSummary sameAs: ('\Extracción por 100 pesos\Balance = -100 pesos\') withNewLines).
 	! !
 
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 11:20:40'!
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 13:30:58'!
 test04AccountSummaryKnowsHowToShowAReportWithATransferForDeposit100
 	| accountSummary |
 	accountSummary := creditorAccountFor100 showReport: AccountSummary.
-	self assert: accountSummary equals: #( 'Entrada por transferencia de 100 pesos' 'Balance = 100 pesos') asOrderedCollection.
+	self assert: (accountSummary sameAs: ('\Entrada por transferencia de 100 pesos\Balance = 100 pesos\') withNewLines).
 	! !
 
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 11:20:53'!
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 13:31:45'!
 test05AccountSummaryKnowsHowToShowAReportWithATransferForWithdrawFor100
 	| accountSummary|
 	accountSummary := debitorAccountFor100 showReport: AccountSummary.
-	self assert: accountSummary equals: #( 'Salida por transferencia de 100 pesos' 'Balance = -100 pesos') asOrderedCollection.! !
+	self assert: (accountSummary sameAs: ('\Salida por transferencia de 100 pesos\Balance = -100 pesos\') withNewLines).! !
 
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 11:21:07'!
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 13:33:07'!
 test06AccountSummaryKnowsHowToShowAReportWithMultipleTransactions
 	| destinationAccount originAccount accountSummary|
 	destinationAccount := 	ReceptiveAccount new.
@@ -418,48 +418,46 @@ test06AccountSummaryKnowsHowToShowAReportWithMultipleTransactions
 	originAccount register: (Deposit for: 300).
 	originAccount register: (Withdraw for: 100).
 	accountSummary := originAccount showReport: AccountSummary.
-	self assert: accountSummary equals: #( 'Salida por transferencia de 200 pesos' 'Depósito por 300 pesos' 'Extracción por 100 pesos' 'Balance = 0 pesos') asOrderedCollection.! !
+	self assert: (accountSummary sameAs: ('\Salida por transferencia de 200 pesos\Depósito por 300 pesos\Extracción por 100 pesos\Balance = 0 pesos\') withNewLines).! !
 
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 11:21:35'!
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 13:33:33'!
 test11AccountSummaryOnlyShowsBalance0IfportfolioHasNotMadeAnyTransactions
 	|portfolio accountSummary|
 	portfolio := Portfolio new.
 	accountSummary := portfolio showReport: AccountSummary.
-	self assert: accountSummary equals: #('Balance = 0 pesos') asOrderedCollection .! !
+	self assert: (accountSummary sameAs: ('\Balance = 0 pesos\') withNewLines).! !
 
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 11:21:53'!
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 13:34:05'!
 test12AccountSummaryKnowsHowToShowAReportforAPortfolioWithADepositFor100
 	|portfolio accountSummary|
 	portfolio := Portfolio new.
 	
 	portfolio add: accountWithDepositFor100 .
 	accountSummary := portfolio showReport: AccountSummary.
-	self assert: accountSummary equals: #('Depósito por 100 pesos' 'Balance = 100 pesos') asOrderedCollection.
+	self assert: (accountSummary sameAs: ('\Depósito por 100 pesos\Balance = 100 pesos\') withNewLines).
 	! !
 
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 11:22:04'!
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 13:35:06'!
 test13AccountSummaryKnowsHowToShowAReportForAPortfolioWithATransferForDeposit100
-	| destinationAccount originAccount accountSummary portfolio |
+	| accountSummary portfolio |
 	portfolio := Portfolio new.
-	destinationAccount := 	ReceptiveAccount new.
-	originAccount := ReceptiveAccount new.
-	portfolio add: destinationAccount.
-	Transfer amount: 100 from: originAccount to: destinationAccount.
+	
+	portfolio add: creditorAccountFor100 .
 	accountSummary := portfolio showReport: AccountSummary.
-	self assert: accountSummary equals: #( 'Entrada por transferencia de 100 pesos' 'Balance = 100 pesos') asOrderedCollection.
+	self assert: (accountSummary sameAs: ('\Entrada por transferencia de 100 pesos\Balance = 100 pesos\') withNewLines).
 	! !
 
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 11:22:12'!
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 13:35:51'!
 test14AccountSummaryKnowsHowToShowAReportForAPortfolioWithMoreThanOneAccount
 	| accountSummary portfolio |
 	portfolio := Portfolio new.
 	portfolio add: accountWithDepositFor100 .
 	portfolio add: accountWithWithdrawFor100 .
 	accountSummary := portfolio showReport: AccountSummary.
-	self assert: accountSummary equals: #('Depósito por 100 pesos' 'Extracción por 100 pesos' 'Balance = 0 pesos') asOrderedCollection.
+	self assert: (accountSummary sameAs: ('\Depósito por 100 pesos\Extracción por 100 pesos\Balance = 0 pesos\') withNewLines).
 	! !
 
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 11:22:26'!
+!ReportTest methodsFor: 'accountSummary tests' stamp: 'IACS 6/16/2022 13:36:46'!
 test15AccountSummaryKnowsHowToShowAReportForAPortfolioWithInsideAnotherPortfolio
 	| mainPortfolio accountSummary secondaryPortfolio |
 	mainPortfolio := 	Portfolio new.
@@ -467,7 +465,9 @@ test15AccountSummaryKnowsHowToShowAReportForAPortfolioWithInsideAnotherPortfolio
 	mainPortfolio add: secondaryPortfolio.
 	secondaryPortfolio add: accountWithDepositFor100 .
 	accountSummary := mainPortfolio showReport: AccountSummary.
-	self assert: accountSummary equals: #('Depósito por 100 pesos' 'Balance = 100 pesos') asOrderedCollection.
+	
+	self assert: (accountSummary sameAs: ('\Depósito por 100 pesos\Balance = 100 pesos\') withNewLines).
+
 	! !
 
 
@@ -842,15 +842,15 @@ Object subclass: #AccountTransaction
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountTransaction methodsFor: 'value' stamp: 'AT 6/13/2022 20:32:51'!
-print
-
-	self subclassResponsibility.! !
-
 !AccountTransaction methodsFor: 'value' stamp: 'HernanWilkinson 9/12/2011 12:25'!
 value 
 
 	self subclassResponsibility ! !
+
+
+!AccountTransaction methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:00:05'!
+affectReport: aReport
+	self subclassResponsibility.! !
 
 
 !AccountTransaction methodsFor: 'balance' stamp: 'HAW 5/25/2019 11:25:39'!
@@ -872,13 +872,6 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Deposit methodsFor: 'value' stamp: 'AT 6/13/2022 20:45:04'!
-print
-	| string |
-	string := 'Depósito por ' append: ((self value) asString).
-	string := string append: ' pesos'.
-	^string! !
-
 !Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
 value
 
@@ -889,6 +882,11 @@ value
 affectBalance: aBalance
 
 	^aBalance + value ! !
+
+
+!Deposit methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:04:51'!
+affectReport: aReport
+	aReport getAffectedByADeposit: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -924,6 +922,11 @@ AccountTransaction subclass: #TransferLeg
 value
 
 	^transfer value! !
+
+
+!TransferLeg methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:01:40'!
+affectReport: aReport
+	self subclassResponsibility.! !
 
 
 !TransferLeg methodsFor: 'initialization' stamp: 'LL 9/20/2020 22:28:14'!
@@ -967,11 +970,9 @@ affectBalance: aBalance
 	^aBalance + self value! !
 
 
-!TransferDepositLeg methodsFor: 'AA' stamp: 'AT 6/15/2022 00:28:30'!
-print
-	| string |
-	string := ('Entrada por transferencia de ' append: ((self value) asString)) append: ' pesos'.
-	^string.! !
+!TransferDepositLeg methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:04:41'!
+affectReport: aReport
+	aReport getAffectedByATransferDeposit: self.! !
 
 
 !classDefinition: #TransferWithdrawLeg category: 'ServiciosFinancieros-Solucion'!
@@ -986,17 +987,16 @@ depositLeg
 
 	^transfer depositLeg! !
 
-!TransferWithdrawLeg methodsFor: 'accessing' stamp: 'AT 6/15/2022 00:34:13'!
-print
-	| string |
-	string := ('Salida por transferencia de ' append: ((self value) asString)) append: ' pesos'.
-	^string.! !
-
 
 !TransferWithdrawLeg methodsFor: 'balance' stamp: 'LL 9/20/2020 22:27:55'!
 affectBalance: aBalance
 
 	^aBalance - self value! !
+
+
+!TransferWithdrawLeg methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:04:33'!
+affectReport: aReport
+	aReport getAffectedByATransferWithdraw: self.! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Solucion'!
@@ -1024,12 +1024,9 @@ affectBalance: aBalance
 	^aBalance - value! !
 
 
-!Withdraw methodsFor: 'AAA' stamp: 'AT 6/13/2022 20:52:15'!
-print
-	| string |
-	string := 'Extracción por '  append: ((self value) asString).
-	string := string append: ' pesos'.
-	^string.! !
+!Withdraw methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:04:07'!
+affectReport: aReport
+	aReport getAffectedByAWithdraw: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1061,7 +1058,23 @@ Object subclass: #Report
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!Report methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 22:34:14'!
+!Report methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:03:32'!
+getAffectedByADeposit: aDeposit
+	self subclassResponsibility.! !
+
+!Report methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:03:43'!
+getAffectedByATransferDeposit: aDeposit
+	self subclassResponsibility.! !
+
+!Report methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:03:51'!
+getAffectedByATransferWithdraw: aDeposit
+	self subclassResponsibility.! !
+
+!Report methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:03:37'!
+getAffectedByAWithdraw: aDeposit
+	self subclassResponsibility.! !
+
+!Report methodsFor: 'reporting' stamp: 'AT 6/15/2022 22:34:14'!
 obtainReportFor: anAccount
 	self subclassResponsibility.! !
 
@@ -1078,25 +1091,54 @@ showReportOf: anAccount
 
 !classDefinition: #AccountSummary category: 'ServiciosFinancieros-Solucion'!
 Report subclass: #AccountSummary
-	instanceVariableNames: ''
+	instanceVariableNames: 'collectionOfTheLinesInTheSummary textOfTheSummary'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'AT 6/15/2022 23:11:28'!
-obtainReportFor: anAccount 
-	| collectionWithPrintedTransactions |
-	collectionWithPrintedTransactions := (anAccount transactions) collect: [:aTransaction | aTransaction print].
-	collectionWithPrintedTransactions add: (('Balance = ' append: ((anAccount balance) asString)) append: ' pesos').
-	^collectionWithPrintedTransactions.
+!AccountSummary methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:54:23'!
+getAffectedByADeposit: aDeposit
+	| newLineAdded |
+	newLineAdded := ('Depósito por ' append: ((aDeposit value)asString append: ' pesos')).
+	newLineAdded := newLineAdded append: '\'.
+	textOfTheSummary := textOfTheSummary append: newLineAdded.
+	collectionOfTheLinesInTheSummary add: newLineAdded.
 	! !
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'IACS 6/16/2022 10:52:43'!
-obtainReportForAux: anAccount 
-	| collectionWithPrintedTransactions |
-	collectionWithPrintedTransactions := (anAccount transactions) collect: [:aTransaction | aTransaction print].
-	collectionWithPrintedTransactions add: (('Balance = ' append: ((anAccount balance) asString)) append: ' pesos').
-	^collectionWithPrintedTransactions.
+!AccountSummary methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:55:56'!
+getAffectedByATransferDeposit: aTransferDeposit
+	| newLineAdded |
+	newLineAdded := ('Entrada por transferencia de ' append: ((aTransferDeposit value)asString append: ' pesos')).
+	newLineAdded := newLineAdded append: '\'.
+	textOfTheSummary := textOfTheSummary append: newLineAdded.
+	collectionOfTheLinesInTheSummary add: newLineAdded.
+	! !
+
+!AccountSummary methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:56:00'!
+getAffectedByATransferWithdraw: aTransferWithdraw
+	| newLineAdded |
+	newLineAdded := ('Salida por transferencia de ' append: ((aTransferWithdraw value)asString append: ' pesos')).
+	newLineAdded := newLineAdded append: '\'.
+	textOfTheSummary := textOfTheSummary append: newLineAdded.
+	collectionOfTheLinesInTheSummary add: newLineAdded.
+	! !
+
+!AccountSummary methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:56:06'!
+getAffectedByAWithdraw: aWithdraw
+	| newLineAdded |
+	newLineAdded := ('Extracción por ' append: ((aWithdraw value)asString append: ' pesos')).
+	newLineAdded := newLineAdded append: '\'.
+	textOfTheSummary := textOfTheSummary append: newLineAdded.
+	collectionOfTheLinesInTheSummary add: newLineAdded.
+	
+	! !
+
+!AccountSummary methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:52:58'!
+obtainReportFor: anAccount 	textOfTheSummary := '\'.
+	collectionOfTheLinesInTheSummary := OrderedCollection new.
+	(anAccount transactions) do: [:aTransaction | aTransaction affectReport: self].
+	textOfTheSummary := textOfTheSummary append: (('Balance = ' append:((anAccount balance asString))) append: ' pesos\').
+	^textOfTheSummary withNewLines.
 	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -1112,17 +1154,36 @@ showReportOf: anAccount
 
 !classDefinition: #TransferNet category: 'ServiciosFinancieros-Solucion'!
 Report subclass: #TransferNet
-	instanceVariableNames: ''
+	instanceVariableNames: 'transfersNet'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferNet methodsFor: 'instance creation' stamp: 'IACS 6/16/2022 10:23:36'!
-obtainReportFor: anAccount 
-	| transferNet transferLegs |
-	transferLegs := (anAccount transactions) select:[:transaction | transaction isKindOf: TransferLeg].
-	transferNet := transferLegs inject: 0 into: [ :currentTransferNet :transaction | transaction affectBalance: currentTransferNet ].
-	^transferNet.! !
+!TransferNet methodsFor: 'reporting' stamp: 'IACS 6/16/2022 13:37:49'!
+getAffectedByADeposit: aDeposit
+	"The transfer net is not affected by a non-transfer deposit"
+	! !
+
+!TransferNet methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:12:56'!
+getAffectedByATransferDeposit: aTransferDeposit
+	transfersNet := transfersNet + aTransferDeposit value. 
+	! !
+
+!TransferNet methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:13:26'!
+getAffectedByATransferWithdraw: aTransferWithdraw
+	transfersNet := transfersNet - aTransferWithdraw value.
+	! !
+
+!TransferNet methodsFor: 'reporting' stamp: 'IACS 6/16/2022 13:37:57'!
+getAffectedByAWithdraw: aWithdraw
+	"The transfer net is not affected by a non-transfer withdraw"
+	! !
+
+!TransferNet methodsFor: 'reporting' stamp: 'IACS 6/16/2022 12:16:43'!
+obtainReportFor: anAccount
+	transfersNet := 0.
+	anAccount transactions do: [ :aTransaction | aTransaction affectReport: self].
+	^transfersNet.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
