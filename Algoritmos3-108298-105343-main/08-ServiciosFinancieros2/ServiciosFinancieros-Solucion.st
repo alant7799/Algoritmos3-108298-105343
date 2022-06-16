@@ -309,7 +309,15 @@ TestCase subclass: #ReportTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!ReportTest methodsFor: 'tests' stamp: 'AT 6/15/2022 19:41:21'!
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 20:58:17'!
+test01AccountSummaryOnlyShowsBalance0IfTheAccountHasNotMadeAnyTransactions
+
+	| account accountSummary|
+	account := 	ReceptiveAccount new.
+	accountSummary := AccountSummary obtainSummaryFor: account.
+	self assert: accountSummary equals: #('Balance = 0 pesos') asOrderedCollection .! !
+
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 19:22:01'!
 test02AccountSummaryKnowsHowToShowAReportWithADepositFor100
 	| account accountSummary|
 	account := 	ReceptiveAccount new.
@@ -318,7 +326,7 @@ test02AccountSummaryKnowsHowToShowAReportWithADepositFor100
 	self assert: accountSummary equals: #('Depósito por 100 pesos' 'Balance = 100 pesos') asOrderedCollection .
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'AT 6/15/2022 19:41:37'!
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 19:29:31'!
 test03AccountSummaryKnowsHowToShowAReportWithAWithdrawFor200
 	| account accountSummary|
 	account := 	ReceptiveAccount new.
@@ -327,62 +335,56 @@ test03AccountSummaryKnowsHowToShowAReportWithAWithdrawFor200
 	self assert: accountSummary equals: #( 'Extracción por 200 pesos' 'Balance = -200 pesos') asOrderedCollection.
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'AT 6/15/2022 19:41:44'!
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 20:54:31'!
 test04AccountSummaryKnowsHowToShowAReportWithATransferForDeposit100
 	| destinationAccount originAccount accountSummary|
 	destinationAccount := 	ReceptiveAccount new.
 	originAccount := ReceptiveAccount new.
 	Transfer amount: 100 from: originAccount to: destinationAccount.
-	accountSummary := (AccountSummary new) obtainSummaryFor: destinationAccount.
+	accountSummary := AccountSummary obtainSummaryFor: destinationAccount.
 	self assert: accountSummary equals: #( 'Entrada por transferencia de 100 pesos' 'Balance = 100 pesos') asOrderedCollection.
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'AT 6/15/2022 19:41:51'!
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 20:54:40'!
 test05AccountSummaryKnowsHowToShowAReportWithATransferForWithdrawFor200
 	| destinationAccount originAccount accountSummary|
 	destinationAccount := 	ReceptiveAccount new.
 	originAccount := ReceptiveAccount new.
 	Transfer amount: 200 from: originAccount to: destinationAccount.
-	accountSummary := (AccountSummary new) obtainSummaryFor: originAccount .
+	accountSummary := AccountSummary obtainSummaryFor: originAccount .
 	self assert: accountSummary equals: #( 'Salida por transferencia de 200 pesos' 'Balance = -200 pesos') asOrderedCollection.! !
 
-
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'AT 6/15/2022 20:04:45'!
-test01AccountSummaryOnlyShowsBalance0IfTheAccountHasNotMadeAnyTransactions
-
-	| account accountSummary|
-	account := 	ReceptiveAccount new.
-	accountSummary := (AccountSummary new) obtainSummaryFor: account.
-	self assert: accountSummary equals: #('Balance = 0 pesos') asOrderedCollection.! !
-
-!ReportTest methodsFor: 'accountSummary tests' stamp: 'AT 6/15/2022 20:04:34'!
-test06AccountSummaryKnowsHowToShowAReportWithATransferForWithdrawFor200andAtransferForDeposit200
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 20:54:51'!
+test06AccountSummaryKnowsHowToShowAReportWithMultipleTransactions
 	| destinationAccount originAccount accountSummary|
 	destinationAccount := 	ReceptiveAccount new.
 	originAccount := ReceptiveAccount new.
 	Transfer amount: 200 from: originAccount to: destinationAccount.
-	Transfer amount: 200 from: destinationAccount to: originAccount.
-	accountSummary := (AccountSummary new) obtainSummaryFor: originAccount .
-	self assert: accountSummary equals: #( 'Salida por transferencia de 200 pesos' 'Entrada por transferencia de 200 pesos' 'Balance = 0 pesos') asOrderedCollection.! !
+	
+	originAccount register: (Deposit for: 300).
+	
+	originAccount register: (Withdraw for: 100).
 
+	accountSummary := AccountSummary obtainSummaryFor: originAccount .
+	self assert: accountSummary equals: #( 'Salida por transferencia de 200 pesos' 'Depósito por 300 pesos' 'Extracción por 100 pesos' 'Balance = 0 pesos') asOrderedCollection.! !
 
-!ReportTest methodsFor: 'transfernet tests' stamp: 'AT 6/15/2022 20:30:55'!
-test07TransferNetOnlyShows0IfTheAccountHasNotMadeAnyTransactions
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 20:53:28'!
+test07AskingForTheTransferNetOfAnAccountWithNoTransactionsYields0
 
-	| account transferBalance|
+	| account transferNet |
 	account := 	ReceptiveAccount new.
-	transferBalance := (TransferNet new) transferBalanceFor: account.
-	self assert: transferBalance equals: 'Balance por transferencias = 0 pesos'! !
+	transferNet := (TransferNet) obtainTransferNetFor: account.
+	self assert: (transferNet sameAs: 'The transfer net for this account is 0 pesos').! !
 
-!ReportTest methodsFor: 'transfernet tests' stamp: 'AT 6/15/2022 20:31:30'!
-test08TransferNetShowsABalanceOf100withOneTransferenceForDeposit
+!ReportTest methodsFor: 'tests' stamp: 'IACS 6/15/2022 21:02:02'!
+test08AskingForTheTransferNetOfAnAccountWithOneTransactionsYieldsTheBalanceOfThatTransaction
 
-	| transferBalance originAccount destinationAccount |
-	originAccount := 	ReceptiveAccount new.
-	destinationAccount := 	ReceptiveAccount new.
-	Transfer amount: 100 from: originAccount  to: destinationAccount.
-	transferBalance := (TransferNet new) transferBalanceFor: destinationAccount.
-	self assert: transferBalance equals: 'Balance por transferencias = 100 pesos'! !
+	| debitorAccount creditorAccount transferNet |
+	debitorAccount := 	ReceptiveAccount new.
+	creditorAccount := ReceptiveAccount new.
+	Transfer amount: 100 from: debitorAccount to: creditorAccount. 
+	transferNet := (TransferNet) obtainTransferNetFor: creditorAccount.
+	self assert: (transferNet sameAs: 'The transfer net for this account is 100 pesos').! !
 
 
 !classDefinition: #TransferTest category: 'ServiciosFinancieros-Solucion'!
@@ -737,6 +739,16 @@ obtainSummaryFor: aReceptiveAccount
 	^collectionWithPrintedTransactions.
 	! !
 
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'AccountSummary class' category: 'ServiciosFinancieros-Solucion'!
+AccountSummary class
+	instanceVariableNames: ''!
+
+!AccountSummary class methodsFor: 'instance creation' stamp: 'IACS 6/15/2022 20:54:16'!
+obtainSummaryFor: anAccount
+	^self new obtainSummaryFor: anAccount. ! !
+
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Solucion'!
 Object subclass: #AccountTransaction
@@ -1052,15 +1064,26 @@ amount: anAmountOfMoney from: originAccount to: destinationAccount
 
 !classDefinition: #TransferNet category: 'ServiciosFinancieros-Solucion'!
 Object subclass: #TransferNet
-	instanceVariableNames: 'value withdrawLeg depositLeg'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferNet methodsFor: 'nil' stamp: 'AT 6/15/2022 20:48:16'!
-transferBalanceFor: anAccount
-	| transfers | 
-	(anAccount transactions ) ifEmpty: [^ (('Balance por transferencias = ' append: (0 asString)) append: ' pesos')].
-	transfers := (anAccount transactions) collect: [: aTransaction | TransferLeg subclasses includes:(aTransaction class)].
-	transfers := transfers sum: [: aTransfer | aTransfer value].
-	^(('Balance por transferencias = ' append: (transfers asString)) append: ' pesos').! !
+!TransferNet methodsFor: 'instance creation' stamp: 'IACS 6/15/2022 21:40:31'!
+obtainTransferNetFor: anAccount 
+	| transferNet transferLegs outputOfTransferNet|
+	transferLegs := (anAccount transactions) select:[:transaction | transaction isKindOf: TransferLeg].
+	transferNet := transferLegs inject: 0 into: [ :currentTransferNet :transaction | transaction affectBalance: currentTransferNet ].
+	outputOfTransferNet := 'The transfer net for this account is ' append: (transferNet asString append: ' pesos').
+	outputOfTransferNet print.
+	^outputOfTransferNet.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferNet class' category: 'ServiciosFinancieros-Solucion'!
+TransferNet class
+	instanceVariableNames: ''!
+
+!TransferNet class methodsFor: 'instance creation' stamp: 'IACS 6/15/2022 20:51:15'!
+obtainTransferNetFor: anAccount
+	^self new obtainTransferNetFor: anAccount! !
